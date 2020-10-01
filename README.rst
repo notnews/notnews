@@ -144,6 +144,7 @@ API
 -  **Functionality:**
 
       -  Normalizes the text and gets the bi-grams and tri-grams
+      -  Outputs calibrated probability of soft news using the trained model
 
 -  **Output**
 
@@ -188,9 +189,10 @@ API
         >>>
 
 
-3. **pred_what_news_us**: We use data from NY Times to train a `model <notnews/models/us_not_news.ipynb>`__. The function
-     uses the trained model to predict the news category---Arts, Books, Business Finance, Classifieds, Dining, Editorial,
-     Foreign News, Health, Leisure, Local, National, Obits, Other, Real Estate, Science, Sports, Style, and Travel
+3. **pred_what_news_us**: We use a `model <notnews/models/us_not_news.ipynb>`__ trained on the
+    `annotated NY Times corpus <https://github.com/notnews/nytimes-corpus-extractor>`__ to predict the
+     type of news---Arts, Books, Business Finance, Classifieds, Dining, Editorial, Foreign News, Health, Leisure,
+     Local, National, Obits, Other, Real Estate, Science, Sports, Style, and Travel.
 
 -  **Arguments:**
 
@@ -200,6 +202,7 @@ API
 -  **Functionality:**
 
       -  Normalizes the text and gets the bi-grams and tri-grams
+      -  Outputs calibrated probability of the type of news using the trained model
 
 -  **Output**
 
@@ -303,6 +306,7 @@ API
 -  **Functionality:**
 
       -  Normalizes the text and gets the bi-grams and tri-grams
+      -  Outputs calibrated probability of soft news using the trained model
 
 -  **Output**
 
