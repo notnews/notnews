@@ -1,5 +1,5 @@
-notnews: predict soft news
-------------------------------------------------
+notnews: predict soft news using story text and the url structure
+----------------------------------------------------------------
 
 .. image:: https://travis-ci.org/notnews/notnews.svg?branch=master
     :target: https://travis-ci.org/notnews/notnews
@@ -13,7 +13,7 @@ notnews: predict soft news
 .. image:: https://pepy.tech/badge/notnews
     :target: https://pepy.tech/project/notnews
 
-The package provides multiple classifiers for soft news based on the story text and the url structure.
+The package provides classifiers for soft news based on the story text and the url structure for both the US and UK news media. We provide also provide a way to infer the 'kind' of news---Arts, Books, Science, Sports, Travel, etc.---for the US news media.
 
 Quick Start
 ------------
@@ -100,7 +100,7 @@ API
 
 -  **What it does:**
 
-      - converts url name to lower case
+      - converts url to lower case
       - regex
 
       ::
@@ -189,7 +189,8 @@ API
 
 
 3. **pred_what_news_us**: We use data from NY Times to train a `model <notnews/models/us_not_news.ipynb>`__. The function
-   uses the trained model to predict what is the news category.
+     uses the trained model to predict the news category---Arts, Books, Business Finance, Classifieds, Dining, Editorial,
+     Foreign News, Health, Leisure, Local, National, Obits, Other, Real Estate, Science, Sports, Style, and Travel
 
 -  **Arguments:**
 
@@ -256,7 +257,7 @@ API
 
 -  **What it does:**
 
-      - converts url name to lower case
+      - converts url to lower case
       - regex
 
     ::
@@ -345,10 +346,10 @@ API
         9                the daily mail  http://www.dailymail.co.uk/news/article-252383...  ca nt afford third child foot bill key down st...           0.004905
         >>>
 
-Command Lines
+Command Line
 ~~~~~~~~~~~~~
 
-We also implement the scripts to process the input file in CSV format:-
+We also implement the scripts to process the input file in the CSV format:
 
 1. **soft_news_url_cat_us**
 
