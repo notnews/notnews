@@ -292,9 +292,8 @@ API
 
 
 
-5. **pred_soft_news_uk**: We use data from `here <>__` to train a
-       `model <notnews/models/uk_not_news.ipynb>`__. The function
-       uses the trained model to predict soft news.
+5. **pred_soft_news_uk**: We use the `model <notnews/models/uk_not_news.ipynb>`__
+       to predict soft news for UK news media.
 
 -  **Arguments:**
 
