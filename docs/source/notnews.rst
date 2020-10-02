@@ -1,5 +1,5 @@
-notnews: predict soft news
-------------------------------------------------
+notnews: predict soft news using story text and the url structure
+=================================================================
 
 .. image:: https://travis-ci.org/notnews/notnews.svg?branch=master
     :target: https://travis-ci.org/notnews/notnews
@@ -13,10 +13,10 @@ notnews: predict soft news
 .. image:: https://pepy.tech/badge/notnews
     :target: https://pepy.tech/project/notnews
 
-The package provides multiple classifiers for soft news based on the story text and the url structure.
+The package provides classifiers for soft news based on the story text and the url structure for both the US and UK news media. We provide also provide a way to infer the 'kind' of news---Arts, Books, Science, Sports, Travel, etc.---for the US news media.
 
 Quick Start
-------------
+-----------
 
 ::
 
@@ -48,38 +48,37 @@ Quick Start
     >>> # Load data
     >>> df = pd.read_csv('./notnews/tests/sample_us.csv')
     >>> df
-            src_name                                                url                                               text
-    0             nyt  http://www.nytimes.com/2017/02/11/us/politics/...  mr kushner someth crash cours diplomaci speak ...
-    1  huffingtonpost  http://grvrdr.huffingtonpost.com/302/redirect?...  author still search man suspect shoot kill vic...
-    2             nyt  http://www.nytimes.com/2016/09/19/us/politics/...  photo washington — releas far sober account do...
-    3          google  http://www.foxnews.com/world/2016/07/17/turkey...  turkish govern sunday ratchet crackdown alleg ...
-    4             nyt  http://www.nytimes.com/interactive/2016/08/29/...  nytimescom longer support internet explor earl...
-    5           yahoo  https://www.yahoo.com/news/pittsburgh-symphony...  pittsburgh ap — pittsburgh symphoni orchestra ...
-    6         foxnews  http://www.foxnews.com/politics/2016/08/13/cli...  hillari clinton campaign question report top a...
-    7         foxnews  http://www.foxnews.com/us/2017/04/15/april-gir...  april giraff given birth new york zoo million ...
-    8         foxnews  http://www.foxnews.com/politics/2017/05/03/hil...  want fox news halftim report inbox everi day s...
-    9             nyt  http://www.nytimes.com/2016/09/06/obituaries/p...  she extrem liber woman ms decrow said intervie...
-    df = pd.read_csv('./notnews/tests/sample_us.csv')
-
+                src                                                url                                               text
+    0  huffingtonpost  http://www.huffingtonpost.com/entry/dnc-black-...  WASHINGTON ― Dont offer support for the concre...
+    1  washingtonpost  https://www.washingtonpost.com/posteverything/...    Daniel Fishel for The Washington Post  When ...
+    2          google   http://www.bbc.com/news/world-us-canada-37805525  Media caption Hilary Clinton said The American...
+    3          google  http://www.politico.com/story/2016/08/how-big-...  Hillary Clinton just outbounced Donald Trump. ...
+    4         foxnews  http://www.foxnews.com/us/2017/03/07/2-men-dre...  Two men with weapons and dressed as clowns sca...
+    5             nyt  https://www.nytimes.com/2017/05/05/us/politics...  It also plays to the Democratic line of attack...
+    6             nyt  http://www.nytimes.com/interactive/2016/11/08/...  Regarding Indiana Im not particularly interest...
+    7  washingtonpost  https://www.washingtonpost.com/news/the-fix/wp...  The story of Humayun Khan — and his parents — ...
+    8             nyt  http://www.nytimes.com/2017/02/10/opinion/when...  What will you do when terrorists attack or U.S...
+    9             nyt  http://www.nytimes.com/interactive/2017/04/07/...  Tonights strike in Syria appears to be a propo...
+    >>>
     >>> # Get the Soft News URL category
     >>> df_soft_news_url_cat_us  = soft_news_url_cat_us(df, col='url')
     >>> df_soft_news_url_cat_us
-            src_name                                                url                                               text  soft_lab  hard_lab
-    0             nyt  http://www.nytimes.com/2017/02/11/us/politics/...  mr kushner someth crash cours diplomaci speak ...       NaN       1.0
-    1  huffingtonpost  http://grvrdr.huffingtonpost.com/302/redirect?...  author still search man suspect shoot kill vic...       NaN       NaN
-    2             nyt  http://www.nytimes.com/2016/09/19/us/politics/...  photo washington — releas far sober account do...       NaN       1.0
-    3          google  http://www.foxnews.com/world/2016/07/17/turkey...  turkish govern sunday ratchet crackdown alleg ...       NaN       1.0
-    4             nyt  http://www.nytimes.com/interactive/2016/08/29/...  nytimescom longer support internet explor earl...       NaN       1.0
-    5           yahoo  https://www.yahoo.com/news/pittsburgh-symphony...  pittsburgh ap — pittsburgh symphoni orchestra ...       1.0       NaN
-    6         foxnews  http://www.foxnews.com/politics/2016/08/13/cli...  hillari clinton campaign question report top a...       NaN       1.0
-    7         foxnews  http://www.foxnews.com/us/2017/04/15/april-gir...  april giraff given birth new york zoo million ...       NaN       NaN
-    8         foxnews  http://www.foxnews.com/politics/2017/05/03/hil...  want fox news halftim report inbox everi day s...       NaN       1.0
-    9             nyt  http://www.nytimes.com/2016/09/06/obituaries/p...  she extrem liber woman ms decrow said intervie...       NaN       NaN
+                src                                                url                                               text soft_lab  hard_lab
+    0  huffingtonpost  http://www.huffingtonpost.com/entry/dnc-black-...  WASHINGTON ― Dont offer support for the concre...     None       NaN
+    1  washingtonpost  https://www.washingtonpost.com/posteverything/...    Daniel Fishel for The Washington Post  When ...     None       NaN
+    2          google   http://www.bbc.com/news/world-us-canada-37805525  Media caption Hilary Clinton said The American...     None       1.0
+    3          google  http://www.politico.com/story/2016/08/how-big-...  Hillary Clinton just outbounced Donald Trump. ...     None       1.0
+    4         foxnews  http://www.foxnews.com/us/2017/03/07/2-men-dre...  Two men with weapons and dressed as clowns sca...     None       1.0
+    5             nyt  https://www.nytimes.com/2017/05/05/us/politics...  It also plays to the Democratic line of attack...     None       1.0
+    6             nyt  http://www.nytimes.com/interactive/2016/11/08/...  Regarding Indiana Im not particularly interest...     None       1.0
+    7  washingtonpost  https://www.washingtonpost.com/news/the-fix/wp...  The story of Humayun Khan — and his parents — ...     None       1.0
+    8             nyt  http://www.nytimes.com/2017/02/10/opinion/when...  What will you do when terrorists attack or U.S...     None       NaN
+    9             nyt  http://www.nytimes.com/interactive/2017/04/07/...  Tonights strike in Syria appears to be a propo...     None       1.0
     >>>
 
 
 Installation
---------------
+------------
 
 Installation is as easy as typing in:
 
@@ -88,7 +87,7 @@ Installation is as easy as typing in:
     pip install notnews
 
 API
-~~~~~~~~~~
+---
 
 1. **soft_news_url_cat_us** Uses URL patterns in prominent outlets to classify the type of news. It is based on a slightly amended version of the regular expression used to classify news, and non-news in `Exposure to ideologically diverse news and opinion on Facebook <https://science.sciencemag.org/content/348/6239/1130>`__ by Bakshy, Messing, and Adamic in Science in 2015. Our only amendment: sport rather than sports. The classifier success is liable to vary over time and across outlets.
 
@@ -100,7 +99,7 @@ API
 
 -  **What it does:**
 
-      - converts url name to lower case
+      - converts url to lower case
       - regex
 
       ::
@@ -144,6 +143,7 @@ API
 -  **Functionality:**
 
       -  Normalizes the text and gets the bi-grams and tri-grams
+      -  Outputs calibrated probability of soft news using the trained model
 
 -  **Output**
 
@@ -158,38 +158,40 @@ API
         >>>
         >>> df = pd.read_csv('notnews/tests/sample_us.csv')
         >>> df
-                src_name                                                url                                               text
-        0             nyt  http://www.nytimes.com/2017/02/11/us/politics/...  mr kushner someth crash cours diplomaci speak ...
-        1  huffingtonpost  http://grvrdr.huffingtonpost.com/302/redirect?...  author still search man suspect shoot kill vic...
-        2             nyt  http://www.nytimes.com/2016/09/19/us/politics/...  photo washington — releas far sober account do...
-        3          google  http://www.foxnews.com/world/2016/07/17/turkey...  turkish govern sunday ratchet crackdown alleg ...
-        4             nyt  http://www.nytimes.com/interactive/2016/08/29/...  nytimescom longer support internet explor earl...
-        5           yahoo  https://www.yahoo.com/news/pittsburgh-symphony...  pittsburgh ap — pittsburgh symphoni orchestra ...
-        6         foxnews  http://www.foxnews.com/politics/2016/08/13/cli...  hillari clinton campaign question report top a...
-        7         foxnews  http://www.foxnews.com/us/2017/04/15/april-gir...  april giraff given birth new york zoo million ...
-        8         foxnews  http://www.foxnews.com/politics/2017/05/03/hil...  want fox news halftim report inbox everi day s...
-        9             nyt  http://www.nytimes.com/2016/09/06/obituaries/p...  she extrem liber woman ms decrow said intervie...
+                    src                                                url                                               text
+        0  huffingtonpost  http://www.huffingtonpost.com/entry/dnc-black-...  WASHINGTON ― Dont offer support for the concre...
+        1  washingtonpost  https://www.washingtonpost.com/posteverything/...    Daniel Fishel for The Washington Post  When ...
+        2          google   http://www.bbc.com/news/world-us-canada-37805525  Media caption Hilary Clinton said The American...
+        3          google  http://www.politico.com/story/2016/08/how-big-...  Hillary Clinton just outbounced Donald Trump. ...
+        4         foxnews  http://www.foxnews.com/us/2017/03/07/2-men-dre...  Two men with weapons and dressed as clowns sca...
+        5             nyt  https://www.nytimes.com/2017/05/05/us/politics...  It also plays to the Democratic line of attack...
+        6             nyt  http://www.nytimes.com/interactive/2016/11/08/...  Regarding Indiana Im not particularly interest...
+        7  washingtonpost  https://www.washingtonpost.com/news/the-fix/wp...  The story of Humayun Khan — and his parents — ...
+        8             nyt  http://www.nytimes.com/2017/02/10/opinion/when...  What will you do when terrorists attack or U.S...
+        9             nyt  http://www.nytimes.com/interactive/2017/04/07/...  Tonights strike in Syria appears to be a propo...
         >>>
         >>> pred_soft_news_us(df)
-        Using model data from /opt/notebooks/not_news/notnews/notnews/data/us_model/nyt_us_soft_news_classifier.joblib...
-        Using vectorizer data from /opt/notebooks/not_news/notnews/notnews/data/us_model/nyt_us_soft_news_vectorizer.joblib...
+        Using model data from /opt/notebooks/not_news/notnews_pub/notnews/data/us_model/nyt_us_soft_news_classifier.joblib...
+        Using vectorizer data from /opt/notebooks/not_news/notnews_pub/notnews/data/us_model/nyt_us_soft_news_vectorizer.joblib...
         Loading the model and vectorizer data file...
-                src_name                                                url                                               text  prob_soft_news_us
-        0             nyt  http://www.nytimes.com/2017/02/11/us/politics/...  mr kushner someth crash cours diplomaci speak ...           0.175099
-        1  huffingtonpost  http://grvrdr.huffingtonpost.com/302/redirect?...  author still search man suspect shoot kill vic...           0.044617
-        2             nyt  http://www.nytimes.com/2016/09/19/us/politics/...  photo washington — releas far sober account do...           0.010398
-        3          google  http://www.foxnews.com/world/2016/07/17/turkey...  turkish govern sunday ratchet crackdown alleg ...           0.011246
-        4             nyt  http://www.nytimes.com/interactive/2016/08/29/...  nytimescom longer support internet explor earl...           0.021861
-        5           yahoo  https://www.yahoo.com/news/pittsburgh-symphony...  pittsburgh ap — pittsburgh symphoni orchestra ...           0.372437
-        6         foxnews  http://www.foxnews.com/politics/2016/08/13/cli...  hillari clinton campaign question report top a...           0.077207
-        7         foxnews  http://www.foxnews.com/us/2017/04/15/april-gir...  april giraff given birth new york zoo million ...           0.481287
-        8         foxnews  http://www.foxnews.com/politics/2017/05/03/hil...  want fox news halftim report inbox everi day s...           0.004383
-        9             nyt  http://www.nytimes.com/2016/09/06/obituaries/p...  she extrem liber woman ms decrow said intervie...           0.694037
+                    src                                                url                                               text  prob_soft_news_us
+        0  huffingtonpost  http://www.huffingtonpost.com/entry/dnc-black-...  WASHINGTON ― Dont offer support for the concre...           0.171090
+        1  washingtonpost  https://www.washingtonpost.com/posteverything/...    Daniel Fishel for The Washington Post  When ...           0.202707
+        2          google   http://www.bbc.com/news/world-us-canada-37805525  Media caption Hilary Clinton said The American...           0.107870
+        3          google  http://www.politico.com/story/2016/08/how-big-...  Hillary Clinton just outbounced Donald Trump. ...           0.592496
+        4         foxnews  http://www.foxnews.com/us/2017/03/07/2-men-dre...  Two men with weapons and dressed as clowns sca...           0.048173
+        5             nyt  https://www.nytimes.com/2017/05/05/us/politics...  It also plays to the Democratic line of attack...           0.041430
+        6             nyt  http://www.nytimes.com/interactive/2016/11/08/...  Regarding Indiana Im not particularly interest...           0.511113
+        7  washingtonpost  https://www.washingtonpost.com/news/the-fix/wp...  The story of Humayun Khan — and his parents — ...           0.043211
+        8             nyt  http://www.nytimes.com/2017/02/10/opinion/when...  What will you do when terrorists attack or U.S...           0.004672
+        9             nyt  http://www.nytimes.com/interactive/2017/04/07/...  Tonights strike in Syria appears to be a propo...           0.090724
         >>>
 
 
-3. **pred_what_news_us**: We use data from NY Times to train a `model <notnews/models/us_not_news.ipynb>`__. The function
-   uses the trained model to predict what is the news category.
+3. **pred_what_news_us**: We use a `model <notnews/models/us_not_news.ipynb>`__ trained on the
+    `annotated NY Times corpus <https://github.com/notnews/nytimes-corpus-extractor>`__ to predict the
+     type of news---Arts, Books, Business Finance, Classifieds, Dining, Editorial, Foreign News, Health, Leisure,
+     Local, National, Obits, Other, Real Estate, Science, Sports, Style, and Travel.
 
 -  **Arguments:**
 
@@ -199,6 +201,7 @@ API
 -  **Functionality:**
 
       -  Normalizes the text and gets the bi-grams and tri-grams
+      -  Outputs calibrated probability of the type of news using the trained model
 
 -  **Output**
 
@@ -214,33 +217,33 @@ API
         >>>
         >>> df = pd.read_csv('notnews/tests/sample_us.csv')
         >>> df
-                src_name                                                url                                               text
-        0             nyt  http://www.nytimes.com/2017/02/11/us/politics/...  mr kushner someth crash cours diplomaci speak ...
-        1  huffingtonpost  http://grvrdr.huffingtonpost.com/302/redirect?...  author still search man suspect shoot kill vic...
-        2             nyt  http://www.nytimes.com/2016/09/19/us/politics/...  photo washington — releas far sober account do...
-        3          google  http://www.foxnews.com/world/2016/07/17/turkey...  turkish govern sunday ratchet crackdown alleg ...
-        4             nyt  http://www.nytimes.com/interactive/2016/08/29/...  nytimescom longer support internet explor earl...
-        5           yahoo  https://www.yahoo.com/news/pittsburgh-symphony...  pittsburgh ap — pittsburgh symphoni orchestra ...
-        6         foxnews  http://www.foxnews.com/politics/2016/08/13/cli...  hillari clinton campaign question report top a...
-        7         foxnews  http://www.foxnews.com/us/2017/04/15/april-gir...  april giraff given birth new york zoo million ...
-        8         foxnews  http://www.foxnews.com/politics/2017/05/03/hil...  want fox news halftim report inbox everi day s...
-        9             nyt  http://www.nytimes.com/2016/09/06/obituaries/p...  she extrem liber woman ms decrow said intervie...
+                    src                                                url                                               text
+        0  huffingtonpost  http://www.huffingtonpost.com/entry/dnc-black-...  WASHINGTON ― Dont offer support for the concre...
+        1  washingtonpost  https://www.washingtonpost.com/posteverything/...    Daniel Fishel for The Washington Post  When ...
+        2          google   http://www.bbc.com/news/world-us-canada-37805525  Media caption Hilary Clinton said The American...
+        3          google  http://www.politico.com/story/2016/08/how-big-...  Hillary Clinton just outbounced Donald Trump. ...
+        4         foxnews  http://www.foxnews.com/us/2017/03/07/2-men-dre...  Two men with weapons and dressed as clowns sca...
+        5             nyt  https://www.nytimes.com/2017/05/05/us/politics...  It also plays to the Democratic line of attack...
+        6             nyt  http://www.nytimes.com/interactive/2016/11/08/...  Regarding Indiana Im not particularly interest...
+        7  washingtonpost  https://www.washingtonpost.com/news/the-fix/wp...  The story of Humayun Khan — and his parents — ...
+        8             nyt  http://www.nytimes.com/2017/02/10/opinion/when...  What will you do when terrorists attack or U.S...
+        9             nyt  http://www.nytimes.com/interactive/2017/04/07/...  Tonights strike in Syria appears to be a propo...
         >>>
         >>> pred_what_news_us(df)
-        Using model data from /opt/notebooks/not_news/notnews/notnews/data/us_model/nyt_us_classifier.joblib...
-        Using vectorizer data from /opt/notebooks/not_news/notnews/notnews/data/us_model/nyt_us_vectorizer.joblib...
+        Using model data from /opt/notebooks/not_news/notnews_pub/notnews/data/us_model/nyt_us_classifier.joblib...
+        Using vectorizer data from /opt/notebooks/not_news/notnews_pub/notnews/data/us_model/nyt_us_vectorizer.joblib...
         Loading the model and vectorizer data file...
-                src_name                                                url                                               text  ... prob_sports  prob_style  prob_travel
-        0             nyt  http://www.nytimes.com/2017/02/11/us/politics/...  mr kushner someth crash cours diplomaci speak ...  ...    0.000000    0.040359     0.000000
-        1  huffingtonpost  http://grvrdr.huffingtonpost.com/302/redirect?...  author still search man suspect shoot kill vic...  ...    0.000507    0.000247     0.000417
-        2             nyt  http://www.nytimes.com/2016/09/19/us/politics/...  photo washington — releas far sober account do...  ...    0.000000    0.045793     0.000000
-        3          google  http://www.foxnews.com/world/2016/07/17/turkey...  turkish govern sunday ratchet crackdown alleg ...  ...    0.001300    0.001377     0.000039
-        4             nyt  http://www.nytimes.com/interactive/2016/08/29/...  nytimescom longer support internet explor earl...  ...    0.003534    0.010620     0.000955
-        5           yahoo  https://www.yahoo.com/news/pittsburgh-symphony...  pittsburgh ap — pittsburgh symphoni orchestra ...  ...    0.160631    0.009444     0.000471
-        6         foxnews  http://www.foxnews.com/politics/2016/08/13/cli...  hillari clinton campaign question report top a...  ...    0.006381    0.003990     0.005908
-        7         foxnews  http://www.foxnews.com/us/2017/04/15/april-gir...  april giraff given birth new york zoo million ...  ...    0.000800    0.046999     0.017241
-        8         foxnews  http://www.foxnews.com/politics/2017/05/03/hil...  want fox news halftim report inbox everi day s...  ...    0.000628    0.000460     0.000000
-        9             nyt  http://www.nytimes.com/2016/09/06/obituaries/p...  she extrem liber woman ms decrow said intervie...  ...    0.000000    0.018754     0.000000
+                    src                                                url                                               text  ... prob_sports  prob_style  prob_travel
+        0  huffingtonpost  http://www.huffingtonpost.com/entry/dnc-black-...  WASHINGTON ― Dont offer support for the concre...  ...    0.001404    0.003325     0.000519
+        1  washingtonpost  https://www.washingtonpost.com/posteverything/...    Daniel Fishel for The Washington Post  When ...  ...    0.000359    0.004530     0.000000
+        2          google   http://www.bbc.com/news/world-us-canada-37805525  Media caption Hilary Clinton said The American...  ...    0.000000    0.004288     0.000000
+        3          google  http://www.politico.com/story/2016/08/how-big-...  Hillary Clinton just outbounced Donald Trump. ...  ...    0.045792    0.009661     0.000072
+        4         foxnews  http://www.foxnews.com/us/2017/03/07/2-men-dre...  Two men with weapons and dressed as clowns sca...  ...    0.002152    0.002666     0.072833
+        5             nyt  https://www.nytimes.com/2017/05/05/us/politics...  It also plays to the Democratic line of attack...  ...    0.000000    0.001695     0.000000
+        6             nyt  http://www.nytimes.com/interactive/2016/11/08/...  Regarding Indiana Im not particularly interest...  ...    0.430395    0.010029     0.002200
+        7  washingtonpost  https://www.washingtonpost.com/news/the-fix/wp...  The story of Humayun Khan — and his parents — ...  ...    0.000909    0.027996     0.000507
+        8             nyt  http://www.nytimes.com/2017/02/10/opinion/when...  What will you do when terrorists attack or U.S...  ...    0.000055    0.001063     0.000000
+        9             nyt  http://www.nytimes.com/interactive/2017/04/07/...  Tonights strike in Syria appears to be a propo...  ...    0.000665    0.035810     0.000372
 
         [10 rows x 22 columns]
         >>>
@@ -256,7 +259,7 @@ API
 
 -  **What it does:**
 
-      - converts url name to lower case
+      - converts url to lower case
       - regex
 
     ::
@@ -290,10 +293,8 @@ API
         >>>
 
 
-
-5. **pred_soft_news_uk**: We use data from `here <>__` to train a
-       `model <notnews/models/uk_not_news.ipynb>`__. The function
-       uses the trained model to predict soft news.
+5. **pred_soft_news_uk**: We use the `model <notnews/models/uk_not_news.ipynb>`__
+       to predict soft news for UK news media.
 
 -  **Arguments:**
 
@@ -303,6 +304,7 @@ API
 -  **Functionality:**
 
       -  Normalizes the text and gets the bi-grams and tri-grams
+      -  Outputs calibrated probability of soft news using the trained model
 
 -  **Output**
 
@@ -345,10 +347,11 @@ API
         9                the daily mail  http://www.dailymail.co.uk/news/article-252383...  ca nt afford third child foot bill key down st...           0.004905
         >>>
 
-Command Lines
-~~~~~~~~~~~~~
 
-We also implement the scripts to process the input file in CSV format:-
+Command Line
+------------
+
+We also implement the scripts to process the input file in the CSV format:
 
 1. **soft_news_url_cat_us**
 
@@ -442,12 +445,12 @@ We also implement the scripts to process the input file in CSV format:-
                                 (default: text)
 
 Underlying Data
-~~~~~~~~~~~~~~~~
+---------------
 
 * For more information about how to get the underlying data for UK model, see `here <https://github.com/notnews/uk_not_news>`__. For information about the data underlying the US model, see `here <https://github.com/notnews/us_not_news>`__
 
 Applications
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------
 
 We use the model to estimate the supply of not news in the `US <https://github.com/notnews/us_not_news>`__ and the `UK <https://github.com/notnews/uk_not_news>`__.
 
@@ -457,12 +460,12 @@ Documentation
 For more information, please see `project documentation <http://notnews.readthedocs.io/en/latest/>`__.
 
 Authors
-~~~~~~~~
+-------
 
 Suriyan Laohaprapanon and Gaurav Sood
 
 Contributor Code of Conduct
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------
 
 The project welcomes contributions from everyone! In fact, it depends on
 it. To maintain this welcoming atmosphere, and to collaborate in a fun
@@ -471,7 +474,7 @@ the `Contributor Code of
 Conduct <http://contributor-covenant.org/version/1/0/0/>`__
 
 License
-~~~~~~~
+-------
 
 The package is released under the `MIT
 License <https://opensource.org/licenses/MIT>`__.
