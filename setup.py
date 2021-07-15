@@ -62,7 +62,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.2.0',
+    version='0.2.1',
 
     description='Predict Soft News',
     long_description=long_description,
@@ -119,7 +119,7 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
         "pandas",
-        "scikit-learn",
+        "scikit-learn==0.22.2.post1",
         "joblib",
         "tqdm",
         "nltk"
