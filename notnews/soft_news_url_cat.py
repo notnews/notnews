@@ -13,7 +13,7 @@ class SoftNewsURLCategorizer(object):
 
     @classmethod
     def is_hard_lab(cls, c):
-        if cls.hard_lab:
+        if cls.hard_lab and not pd.isnull(c):
             m = cls.hard_lab.search(c)
             return 1 if m else None
         else:
@@ -21,7 +21,7 @@ class SoftNewsURLCategorizer(object):
 
     @classmethod
     def is_soft_lab(cls, c):
-        if cls.soft_lab:
+        if cls.soft_lab and not pd.isnull(c):
             m = cls.soft_lab.search(c)
             return 1 if m else None
         else:
