@@ -1,0 +1,13 @@
+!.gitignore
+!.gitattributes
+!.travis.yml
+!.pep8speaks.yml
+*.pyc
+*.log
+venv
+venv3
+docs/build
+dist
+*.egg-info
+build
+dev/
