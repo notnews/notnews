@@ -3,8 +3,6 @@ notnews: predict soft news using story text and the url structure
 
 .. image:: https://github.com/notnews/notnews/workflows/test/badge.svg
     :target: https://github.com/notnews/notnews/actions?query=workflow%3Atest
-.. image:: https://ci.appveyor.com/api/projects/status/qfvbu8h99ymtw2ub?svg=true
-    :target: https://ci.appveyor.com/project/notnews/notnews
 .. image:: https://img.shields.io/pypi/v/notnews.svg
     :target: https://pypi.python.org/pypi/notnews
 .. image:: https://readthedocs.org/projects/notnews/badge/?version=latest
