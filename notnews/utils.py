@@ -3,7 +3,7 @@
 import sys
 import os
 from os import path
-
+import pandas as pd
 from tqdm import tqdm
 import requests
 
@@ -19,7 +19,7 @@ def isstring(s):
     return isinstance(s, basestring)
 
 
-def column_exists(df, col):
+def column_exists(df: pd.DataFrame, col: str) -> bool:
     """Check the column name exists in the DataFrame.
 
     Args:
@@ -38,7 +38,7 @@ def column_exists(df, col):
         return True
 
 
-def fixup_columns(cols):
+def fixup_columns(cols: list) -> list:
     """Replace index location column to name with `col` prefix
 
     Args:
@@ -51,13 +51,13 @@ def fixup_columns(cols):
     out_cols = []
     for col in cols:
         if type(col) == int:
-            out_cols.append('col{:d}'.format(col))
+            out_cols.append('col{col}')
         else:
             out_cols.append(col)
     return out_cols
 
 
-def find_ngrams(vocab, text, n):
+def find_ngrams(vocab: list, text: str, n: int):
     """Find and return list of the index of n-grams in the vocabulary list.
 
     Generate the n-grams of the specific text, find them in the vocabulary list

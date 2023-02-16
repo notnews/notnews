@@ -17,14 +17,14 @@ def stem_tokens(tokens, stemmer):
     return stemmed
 
 
-def tokenize(text):
+def tokenize(text: str):
     text = "".join([ch for ch in text if ch not in string.punctuation])
     tokens = nltk.word_tokenize(text)
     stems = stem_tokens(tokens, stemmer)
     return stems
 
 
-def clean_text(text):
+def clean_text(text: str):
     try:
         text = re.sub('\d+', '', text)
         text = text.lower()

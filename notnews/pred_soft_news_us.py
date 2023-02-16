@@ -28,7 +28,7 @@ class USSoftNewsModel(SoftNewsModel):
     model = None
 
     @classmethod
-    def pred_soft_news_us(cls, df, col='text', latest=False):
+    def pred_soft_news_us(cls, df: pd.DataFrame, col='text', latest:bool=False):
         """Predict Soft News by the text using NYT Soft News model.
 
         Using the NYT Soft News model to predict the soft news of the input
@@ -90,7 +90,7 @@ class USSoftNewsModel2(SoftNewsModel):
     model = None
 
     @classmethod
-    def pred_soft_news_us(cls, df, col='text', latest=False):
+    def pred_soft_news_us(cls, df:pd.DataFrame, col='text', latest:bool=False):
         """Predict Soft News by the text using NYT Soft News model.
 
         Using the NYT Soft News model to predict the soft news of the input
