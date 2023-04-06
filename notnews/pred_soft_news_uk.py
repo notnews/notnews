@@ -20,7 +20,7 @@ class UKSoftNewsModel(SoftNewsModel):
     model = None
 
     @classmethod
-    def pred_soft_news_uk(cls, df, col='text', latest=False):
+    def pred_soft_news_uk(cls, df, col:str='text', latest:bool=False):
         """Predict Soft News by the text using UK URL Soft News model.
 
         Using the URL Soft News model to predict the soft news of the input
@@ -76,18 +76,13 @@ def main(argv=sys.argv[1:]):
     parser.add_argument('-o', '--output', default='pred-soft-news-uk-output.csv',
                         help='Output file with prediction data')
     parser.add_argument('-t', '--text', default='text',
-                        help='Name or index location of column contains '
-                             'the text (default: text)')
+                        help='Name of column containing the text (default: text)')
 
     args = parser.parse_args(argv)
 
     print(args)
 
-    if not args.text.isdigit():
-        df = pd.read_csv(args.input)
-    else:
-        df = pd.read_csv(args.input, header=None)
-        args.text = int(args.text)
+    df = pd.read_csv(args.input)
 
     if not column_exists(df, args.text):
         return -1
@@ -95,7 +90,6 @@ def main(argv=sys.argv[1:]):
     rdf = pred_soft_news_uk(df, args.text)
 
     print("Saving output to file: `{0:s}`".format(args.output))
-    rdf.columns = fixup_columns(rdf.columns)
     rdf.to_csv(args.output, index=False)
 
     return 0

@@ -15,7 +15,7 @@ class SoftNewsModel(object):
     VECTFN = None
 
     @classmethod
-    def load_model_data(cls, latest=False):
+    def load_model_data(cls, latest:bool=False):
         if cls.MODELFN:
             model_fn =  resource_filename(__name__, cls.MODELFN)
             path = os.path.dirname(model_fn)

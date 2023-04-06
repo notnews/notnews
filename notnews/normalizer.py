@@ -6,6 +6,7 @@ import string
 from nltk.corpus import stopwords
 from nltk import word_tokenize          
 from nltk.stem.porter import PorterStemmer
+import logging
 
 stemmer = PorterStemmer() 
 
@@ -17,14 +18,14 @@ def stem_tokens(tokens, stemmer):
     return stemmed
 
 
-def tokenize(text: str):
+def tokenize(text: str) -> list[str]:
     text = "".join([ch for ch in text if ch not in string.punctuation])
     tokens = nltk.word_tokenize(text)
     stems = stem_tokens(tokens, stemmer)
     return stems
 
 
-def clean_text(text: str):
+def clean_text(text: str) -> str:
     try:
         text = re.sub('\d+', '', text)
         text = text.lower()
@@ -34,5 +35,5 @@ def clean_text(text: str):
         stems = stem_tokens(tokens, stemmer)
         return ' '.join(stems)
     except Exception as e:
-        print('ERROR:', e)
+        logging.exception(f"An error occurred: {e}")
         return text

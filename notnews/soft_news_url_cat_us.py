@@ -45,7 +45,6 @@ def main(argv=sys.argv[1:]):
     rdf = soft_news_url_cat_us(df, args.url)
 
     print("Saving output to file: `{0:s}`".format(args.output))
-    rdf.columns = fixup_columns(rdf.columns)
     rdf.to_csv(args.output, index=False)
 
     return 0

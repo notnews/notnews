@@ -167,7 +167,6 @@ def main(argv=sys.argv[1:]):
     rdf = pred_soft_news_us(df, args.text)
 
     print("Saving output to file: `{0:s}`".format(args.output))
-    rdf.columns = fixup_columns(rdf.columns)
     rdf.to_csv(args.output, index=False)
 
     return 0
