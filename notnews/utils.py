@@ -6,18 +6,10 @@ from os import path
 import pandas as pd
 from tqdm import tqdm
 import requests
+import logging
 
 REPO_BASE_URL = (os.environ.get('NOTNEWS_DATA_URL') or
                  'https://github.com/notnews/notnews/raw/master/notnews/')
-
-
-def isstring(s):
-    # if we use Python 3
-    if (sys.version_info[0] >= 3):
-        return isinstance(s, str)
-    # we use Python 2
-    return isinstance(s, basestring)
-
 
 def column_exists(df: pd.DataFrame, col: str) -> bool:
     """Check the column name exists in the DataFrame.
@@ -31,8 +23,7 @@ def column_exists(df: pd.DataFrame, col: str) -> bool:
 
     """
     if col and (col not in df.columns):
-        print("The specify column `{0!s}` not found in the input file"
-              .format(col))
+        logging.error("The column {col} was not found in the input file")
         return False
     else:
         return True
@@ -54,9 +45,6 @@ def find_ngrams(vocab: list, text: str, n: int):
     """
 
     wi = []
-
-    if not isstring(text):
-        return wi
 
     a = zip(*[text[i:] for i in range(n)])
     for i in a:
@@ -101,5 +89,5 @@ def download_file(url, target):
                 f.write(data)
         return True
     else:
-        print("ERROR: status_code={0:d}".format(r.status_code))
+        logging.error(f"ERROR: status_code={r.status_code}")
         return False

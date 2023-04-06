@@ -11,7 +11,7 @@ import logging
 from sklearn.feature_extraction.text import TfidfTransformer
 
 from .pred_soft_news import SoftNewsModel
-from .utils import column_exists, fixup_columns
+from .utils import column_exists
 from .normalizer import clean_text
 
 

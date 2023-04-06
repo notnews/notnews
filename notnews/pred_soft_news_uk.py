@@ -10,7 +10,7 @@ import logging
 from sklearn.feature_extraction.text import TfidfTransformer
 
 from .pred_soft_news import SoftNewsModel
-from .utils import column_exists, fixup_columns
+from .utils import column_exists
 from .normalizer import clean_text
 
 
@@ -41,7 +41,7 @@ class UKSoftNewsModel(SoftNewsModel):
 
         """
 
-        if col not in df.columns:
+        if column_exists(df, col):
             logging.info(f"No column {col} in the DataFrame")
             return df
 

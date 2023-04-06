@@ -8,7 +8,7 @@ import pandas as pd
 
 from .soft_news_url_cat import SoftNewsURLCategorizer
 
-from .utils import column_exists, fixup_columns
+from .utils import column_exists
 
 
 class USSoftNewsURLCat(SoftNewsURLCategorizer):
