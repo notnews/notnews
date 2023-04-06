@@ -148,18 +148,13 @@ def main(argv=sys.argv[1:]):
     parser.add_argument('-o', '--output', default='pred-soft-news-us-output.csv',
                         help='Output file with prediction data')
     parser.add_argument('-t', '--text', default='text',
-                        help='Name or index location of column contains '
-                             'the text (default: text)')
+                        help='Name of the column containing the text (default: text)')
 
     args = parser.parse_args(argv)
 
     print(args)
 
-    if not args.text.isdigit():
-        df = pd.read_csv(args.input)
-    else:
-        df = pd.read_csv(args.input, header=None)
-        args.text = int(args.text)
+    df = pd.read_csv(args.input)
 
     if not column_exists(df, args.text):
         return -1

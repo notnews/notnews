@@ -26,18 +26,14 @@ def main(argv=sys.argv[1:]):
     parser.add_argument('-o', '--output', default='soft-news-url-cat-us-output.csv',
                         help='Output file with category data')
     parser.add_argument('-u', '--url', default='url',
-                        help='Name of column contains the domain or URL (default: url)')
+                        help='Name of the column containing the domain or the URL (default: url)')
 
     args = parser.parse_args(argv)
 
     print(args)
 
-    if not args.url.isdigit():
-        df = pd.read_csv(args.input)
-    else:
-        df = pd.read_csv(args.input, header=None)
-        args.last = int(args.last)
-
+    df = pd.read_csv(args.input)
+    
     if not column_exists(df, args.url):
         return -1
 

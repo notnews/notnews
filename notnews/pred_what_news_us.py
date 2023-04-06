@@ -34,11 +34,9 @@ class USWhatNewsModel(SoftNewsModel):
         DataFrame.
 
         Args:
-            df (:obj:`DataFrame`): Pandas DataFrame containing the text
-                column.
-            col (str): Column's name of the text in DataFrame. (default: text)
-            latest (bool): Download latest model data from the server.
-                (default: False)
+            df (:obj:`DataFrame`): Pandas DataFrame containing the text column.
+            col (str): Column name of the column containing the text. (default: text)
+            latest (bool): Download latest model data from the server. (default: False)
 
         Returns:
             DataFrame: Pandas DataFrame with additional columns:
@@ -47,7 +45,7 @@ class USWhatNewsModel(SoftNewsModel):
                   `Dining`, `Editorial`, `Foreign News`, `Health`,
                   `Leisure`, `Local`, `National`, `Obits`, `Other`,
                   `Real Estate`, `Science`, `Sports`, `Style`, `Travel`)
-                   are the prediction probability for each category.
+                   are the predicted probability for each category.
         """
 
         if column_exists(df, col):

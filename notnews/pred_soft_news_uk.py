@@ -28,16 +28,13 @@ class UKSoftNewsModel(SoftNewsModel):
         DataFrame.
 
         Args:
-            df (:obj:`DataFrame`): Pandas DataFrame containing the text
-                column.
-            col (str or int): Column's name or location of the text in
-                DataFrame. (default: text)
-            latest (bool): Download latest model data from the server.
-                (default: False)
+            df (:obj:`DataFrame`): Pandas DataFrame containing the text column.
+            col (str or int): Column name of the column containing the text. (default: text)
+            latest (bool): Download latest model data from the server. (default: False)
 
         Returns:
             DataFrame: Pandas DataFrame with additional columns:
-                - `prob_soft_news_uk` is the prediction probability.
+                - `prob_soft_news_uk` is the predicted probability.
 
         """
 

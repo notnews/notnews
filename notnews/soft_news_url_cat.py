@@ -9,7 +9,6 @@ import logging
 
 from .utils import column_exists
 
-
 class SoftNewsURLCategorizer(object):
     hard_lab = None
     soft_lab = None
@@ -40,12 +39,12 @@ class SoftNewsURLCategorizer(object):
         Args:
             df (:obj:`DataFrame`): Pandas DataFrame containing the URL
                 column.
-            col (str): Column's name of the URL in DataFrame (default: url).
+            col (str): Column name of the column containing the URLs (default: url).
 
         Returns:
             DataFrame: Pandas DataFrame with additional columns:
-                - `soft_lab` set to 1 if URL match with soft news URL pattern.
-                - `hard_lab` set to 1 if URL match with hard news URL pattern.
+                - `soft_lab` set to 1 if the URL matches soft news URL pattern.
+                - `hard_lab` set to 1 if URL matches hard news URL pattern.
 
         """
 
