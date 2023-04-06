@@ -105,7 +105,7 @@ class USSoftNewsModel2(SoftNewsModel):
 
         Returns:
             DataFrame: Pandas DataFrame with additional columns:
-                - `prob_soft_news_us` the predict result
+                - `prob_soft_news_us` the predicted probability
         """
 
         if col not in df.columns:
