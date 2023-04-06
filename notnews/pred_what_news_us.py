@@ -6,6 +6,7 @@ import sys
 import argparse
 import joblib
 import pandas as pd
+import logging
 
 from sklearn.feature_extraction.text import TfidfTransformer
 
@@ -51,7 +52,7 @@ class USWhatNewsModel(SoftNewsModel):
         """
 
         if col not in df.columns:
-            print(f"No column {col} in the DataFrame")
+            logging.info(f"No column {col} in the DataFrame")
             return df
 
         nn = df[col].notnull()

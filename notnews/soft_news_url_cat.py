@@ -5,7 +5,7 @@ import re
 import sys
 import argparse
 import pandas as pd
-
+import logging
 
 class SoftNewsURLCategorizer(object):
     hard_lab = None
@@ -48,7 +48,7 @@ class SoftNewsURLCategorizer(object):
         """
 
         if col not in df.columns:
-            print(f"No column {col} in the DataFrame")
+            logging.info(f"No column {col} in the DataFrame")
             return df
 
         nn = df[col].notnull()
@@ -60,9 +60,7 @@ class SoftNewsURLCategorizer(object):
 
         df['soft_lab'] = df['__url'].apply(lambda c: cls.is_soft_lab(c))
         df['hard_lab'] = df['__url'].apply(lambda c: cls.is_hard_lab(c))
-        #df.loc[(df.hard_lab == 1) & (df.soft_lab.isnull()), 'hard_soft'] = 1
-        #df.loc[(df.hard_lab.isnull()) & (df.soft_lab == 1), 'hard_soft'] = 0
-
+  
         del df['__url']
 
         return df
