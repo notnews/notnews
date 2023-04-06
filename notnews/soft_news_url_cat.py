@@ -28,7 +28,7 @@ class SoftNewsURLCategorizer(object):
             return None
 
     @classmethod
-    def soft_news_url_cat(cls, df, col='url'):
+    def soft_news_url_cat(cls, df:pd.DataFrame, col:str='url'):
         """Soft News Categorize by URL pattern.
 
         Using the URL pattern to categorize the soft/hard news of the input
@@ -37,8 +37,7 @@ class SoftNewsURLCategorizer(object):
         Args:
             df (:obj:`DataFrame`): Pandas DataFrame containing the URL
                 column.
-            col (str or int): Column's name or location of the URL in
-                DataFrame (default: url).
+            col (str): Column's name of the URL in DataFrame (default: url).
 
         Returns:
             DataFrame: Pandas DataFrame with additional columns:
@@ -47,7 +46,7 @@ class SoftNewsURLCategorizer(object):
 
         """
 
-        if col not in df.columns:
+        if column_exists(df, col):
             logging.info(f"No column {col} in the DataFrame")
             return df
 
@@ -55,8 +54,7 @@ class SoftNewsURLCategorizer(object):
         if df[nn].shape[0] == 0:
             return df
 
-        df['__url'] = df[col].str.strip()
-        df['__url'] = df['__url'].str.lower()
+        df['__url'] = df[col].str.strip().str.lower()
 
         df['soft_lab'] = df['__url'].apply(lambda c: cls.is_soft_lab(c))
         df['hard_lab'] = df['__url'].apply(lambda c: cls.is_hard_lab(c))

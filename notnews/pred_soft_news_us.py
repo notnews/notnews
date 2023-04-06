@@ -56,8 +56,7 @@ class USSoftNewsModel(SoftNewsModel):
         if df[nn].shape[0] == 0:
             return df
 
-        df['__text'] = df[col].str.strip()
-        df['__text'] = df['__text'].str.lower()
+        df['__text'] = df[col].str.strip().str.lower()
 
         if cls.model is None:
             # FIXME: hook up custom_tokenizer to __main__

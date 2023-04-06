@@ -27,7 +27,7 @@ class USWhatNewsModel(SoftNewsModel):
     model = None
 
     @classmethod
-    def pred_what_news_us(cls, df, col='text', latest=False):
+    def pred_what_news_us(cls, df:pd.DataFrame, col:str='text', latest=False):
         """Predict Soft News by the text using NYT Soft News model.
 
         Using the NYT Soft News model to predict the soft news of the input
@@ -36,8 +36,7 @@ class USWhatNewsModel(SoftNewsModel):
         Args:
             df (:obj:`DataFrame`): Pandas DataFrame containing the text
                 column.
-            col (str or int): Column's name or location of the text in
-                DataFrame. (default: text)
+            col (str): Column's name of the text in DataFrame. (default: text)
             latest (bool): Download latest model data from the server.
                 (default: False)
 
@@ -51,8 +50,7 @@ class USWhatNewsModel(SoftNewsModel):
                    are the prediction probability for each category.
         """
 
-        if col not in df.columns:
-            logging.info(f"No column {col} in the DataFrame")
+        if column_exists(df, col):
             return df
 
         nn = df[col].notnull()
@@ -99,18 +97,13 @@ def main(argv=sys.argv[1:]):
     parser.add_argument('-o', '--output', default='pred-what-news-us-output.csv',
                         help='Output file with prediction data')
     parser.add_argument('-t', '--text', default='text',
-                        help='Name or index location of column contains '
-                             'the text (default: text)')
+                        help='Name of the column containing the text (default: text)')
 
     args = parser.parse_args(argv)
 
     print(args)
 
-    if not args.text.isdigit():
-        df = pd.read_csv(args.input)
-    else:
-        df = pd.read_csv(args.input, header=None)
-        args.text = int(args.text)
+    df = pd.read_csv(args.input)
 
     if not column_exists(df, args.text):
         return -1

@@ -26,8 +26,7 @@ def main(argv=sys.argv[1:]):
     parser.add_argument('-o', '--output', default='soft-news-url-cat-us-output.csv',
                         help='Output file with category data')
     parser.add_argument('-u', '--url', default='url',
-                        help='Name or index location of column contains '
-                             'the domain or URL (default: url)')
+                        help='Name of column contains the domain or URL (default: url)')
 
     args = parser.parse_args(argv)
 

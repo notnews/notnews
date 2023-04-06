@@ -21,7 +21,7 @@ class UKSoftNewsModel(SoftNewsModel):
     model = None
 
     @classmethod
-    def pred_soft_news_uk(cls, df, col:str='text', latest:bool=False):
+    def pred_soft_news_uk(cls, df:pd.DataFrame, col:str='text', latest:bool=False):
         """Predict Soft News by the text using UK URL Soft News model.
 
         Using the URL Soft News model to predict the soft news of the input
@@ -42,7 +42,6 @@ class UKSoftNewsModel(SoftNewsModel):
         """
 
         if column_exists(df, col):
-            logging.info(f"No column {col} in the DataFrame")
             return df
 
         nn = df[col].notnull()
