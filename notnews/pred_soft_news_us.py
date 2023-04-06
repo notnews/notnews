@@ -48,7 +48,7 @@ class USSoftNewsModel(SoftNewsModel):
         """
 
         if col not in df.columns:
-            print("No column `{0!s}` in the DataFrame".format(col))
+            print(f"No column {col} in the DataFrame")
             return df
 
         nn = df[col].notnull()
@@ -110,7 +110,7 @@ class USSoftNewsModel2(SoftNewsModel):
         """
 
         if col not in df.columns:
-            print("No column `{0!s}` in the DataFrame".format(col))
+            print(f"No column {col} in the DataFrame")
             return df
 
         nn = df[col].notnull()
@@ -166,7 +166,7 @@ def main(argv=sys.argv[1:]):
 
     rdf = pred_soft_news_us(df, args.text)
 
-    print("Saving output to file: `{0:s}`".format(args.output))
+    print(f"Saving output to file: {args.output}")
     rdf.to_csv(args.output, index=False)
 
     return 0

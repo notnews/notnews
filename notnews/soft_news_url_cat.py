@@ -48,7 +48,7 @@ class SoftNewsURLCategorizer(object):
         """
 
         if col not in df.columns:
-            print("No column `{0!s}` in the DataFrame".format(col))
+            print(f"No column {col} in the DataFrame")
             return df
 
         nn = df[col].notnull()
