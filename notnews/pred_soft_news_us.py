@@ -99,8 +99,7 @@ class USSoftNewsModel2(SoftNewsModel):
         Args:
             df (:obj:`DataFrame`): Pandas DataFrame containing the text
                 column.
-            col (str or int): Column's name or location of the text in
-                DataFrame. (default: text)
+            col (str or int): Column name of the column containing the text. (default: text)
             latest (bool): Download latest model data from the server.
                 (default: False)
 
