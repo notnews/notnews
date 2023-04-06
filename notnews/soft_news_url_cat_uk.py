@@ -8,8 +8,6 @@ import pandas as pd
 
 from .soft_news_url_cat import SoftNewsURLCategorizer
 
-from .utils import column_exists
-
 
 class UKSoftNewsURLCat(SoftNewsURLCategorizer):
     hard_lab = re.compile('(politi|world|national|uk-news|scottish-news|news-eu|state|local|elect|vote|govern|campaign|war|polic|econ|unemploy|energy|educa|healthcare|immigration)')
@@ -34,8 +32,8 @@ def main(argv=sys.argv[1:]):
 
     df = pd.read_csv(args.input)
    
-    if not column_exists(df, args.url):
-        return -1
+    if args.url and (args.url not in df.columns):
+        raise Exception(f"The column {args.url} doesn't exist in the dataframe.")
 
     rdf = soft_news_url_cat_uk(df, args.url)
 

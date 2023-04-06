@@ -11,23 +11,6 @@ import logging
 REPO_BASE_URL = (os.environ.get('NOTNEWS_DATA_URL') or
                  'https://github.com/notnews/notnews/raw/master/notnews/')
 
-def column_exists(df: pd.DataFrame, col: str) -> bool:
-    """Check the column name exists in the DataFrame.
-
-    Args:
-        df (:obj:`DataFrame`): Pandas DataFrame.
-        col (str): Column name.
-
-    Returns:
-        bool: True if exists, False if not exists.
-
-    """
-    if col and (col not in df.columns):
-        logging.error("The column {col} was not found in the input file")
-        return False
-    else:
-        return True
-
 def find_ngrams(vocab: list, text: str, n: int):
     """Find and return list of the index of n-grams in the vocabulary list.
 

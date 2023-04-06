@@ -7,8 +7,6 @@ import argparse
 import pandas as pd
 import logging
 
-from .utils import column_exists
-
 class SoftNewsURLCategorizer(object):
     hard_lab = None
     soft_lab = None
@@ -48,9 +46,8 @@ class SoftNewsURLCategorizer(object):
 
         """
 
-        if column_exists(df, col):
-            logging.info(f"No column {col} in the DataFrame")
-            return df
+        if col and (col not in df.columns):
+            raise Exception(f"The column {col} doesn't exist in the dataframe.")
 
         nn = df[col].notnull()
         if df[nn].shape[0] == 0:

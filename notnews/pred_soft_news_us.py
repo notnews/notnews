@@ -11,7 +11,6 @@ import logging
 from sklearn.feature_extraction.text import TfidfTransformer
 
 from .pred_soft_news import SoftNewsModel
-from .utils import column_exists
 from .normalizer import clean_text
 
 
@@ -48,9 +47,8 @@ class USSoftNewsModel(SoftNewsModel):
                 - `prob_soft_news_us` the predict result
         """
 
-        if col not in df.columns:
-            print(f"No column {col} in the DataFrame")
-            return df
+        if col and (col not in df.columns):
+            raise Exception(f"The column {col} doesn't exist in the dataframe.")
 
         nn = df[col].notnull()
         if df[nn].shape[0] == 0:
@@ -108,9 +106,8 @@ class USSoftNewsModel2(SoftNewsModel):
                 - `prob_soft_news_us` the predicted probability
         """
 
-        if col not in df.columns:
-            logging.info(f"No column {col} in the DataFrame")
-            return df
+        if col and (col not in df.columns):
+            raise Exception(f"The column {col} doesn't exist in the dataframe.")
 
         nn = df[col].notnull()
         if df[nn].shape[0] == 0:
@@ -155,8 +152,8 @@ def main(argv=sys.argv[1:]):
 
     df = pd.read_csv(args.input)
 
-    if not column_exists(df, args.text):
-        return -1
+    if args.text and (args.text not in df.columns):
+        raise Exception(f"The column {args.text} doesn't exist in the dataframe.")
 
     rdf = pred_soft_news_us(df, args.text)
 
