@@ -7,6 +7,7 @@ from nltk.corpus import stopwords
 from nltk import word_tokenize          
 from nltk.stem.porter import PorterStemmer
 import logging
+from typing import List
 
 stemmer = PorterStemmer() 
 
@@ -18,7 +19,7 @@ def stem_tokens(tokens, stemmer):
     return stemmed
 
 
-def tokenize(text: str) -> list[str]:
+def tokenize(text: str) -> List[str]:
     text = "".join([ch for ch in text if ch not in string.punctuation])
     tokens = nltk.word_tokenize(text)
     stems = stem_tokens(tokens, stemmer)
