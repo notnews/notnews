@@ -7,6 +7,9 @@ import argparse
 import pandas as pd
 import logging
 
+from .utils import column_exists
+
+
 class SoftNewsURLCategorizer(object):
     hard_lab = None
     soft_lab = None
