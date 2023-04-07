@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import notnews
-from notnews import soft_news_url_cat
+from notnews import soft_news_url_cat_us
 
 # Set app title
 st.title("Not News")
@@ -17,7 +17,7 @@ if st.button("Transform Data"):
         df = pd.read_csv(uploaded_file)
         
         # Use the package to transform the DataFrame
-        transformed_df = soft_news_url_cat(df, col='url')
+        transformed_df = soft_news_url_cat_us(df, col='url')
         
         # Display the transformed DataFrame as a table
         st.write(transformed_df)
