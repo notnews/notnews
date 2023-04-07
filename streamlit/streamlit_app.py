@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import notnews
-from notnews import soft_news_url_cat_us
+from notnews import soft_news_url_cat
 
 # Set app title
 st.title("Not News")
