@@ -10,7 +10,6 @@ import logging
 from sklearn.feature_extraction.text import TfidfTransformer
 
 from .pred_soft_news import SoftNewsModel
-from .utils import column_exists
 from .normalizer import clean_text
 
 
@@ -38,8 +37,8 @@ class UKSoftNewsModel(SoftNewsModel):
 
         """
 
-        if column_exists(df, col):
-            return df
+        if col and (col not in df.columns):
+            raise Exception(f"The column {col} doesn't exist in the dataframe.")
 
         nn = df[col].notnull()
         if df[nn].shape[0] == 0:
