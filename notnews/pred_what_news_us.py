@@ -102,7 +102,7 @@ def main(argv=sys.argv[1:]):
 
     df = pd.read_csv(args.input)
 
-   if args.text and (args.text not in df.columns):
+    if args.text and (args.text not in df.columns):
         raise Exception(f"The column {args.text} doesn't exist in the dataframe.")
 
     rdf = pred_what_news_us(df, args.text)
