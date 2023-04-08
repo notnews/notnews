@@ -62,7 +62,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.2.2',
+    version='0.2.3-dev',
 
     description='Predict Soft News',
     long_description=long_description,
@@ -97,6 +97,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Topic :: Scientific/Engineering :: Information Analysis',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Utilities'
@@ -118,11 +119,13 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
+        "numpy==1.20.3",
         "pandas",
         "scikit-learn==0.22.2.post1",
         "joblib",
         "tqdm",
-        "nltk"
+        "nltk",
+        "requests"
     ],
 
     # List additional groups of dependencies here (e.g. development
