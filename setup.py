@@ -119,7 +119,7 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        "numpy==1.20.3",
+        "numpy==1.22.0",
         "pandas",
         "scikit-learn==0.22.2.post1",
         "joblib",
