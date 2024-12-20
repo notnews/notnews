@@ -121,7 +121,7 @@ setup(
     install_requires=[
         "numpy==1.22.0",
         "pandas",
-        "scikit-learn==0.22.2.post1",
+        "scikit-learn==1.5.0",
         "joblib",
         "tqdm",
         "nltk",
