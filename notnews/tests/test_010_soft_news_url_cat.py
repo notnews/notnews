@@ -23,15 +23,15 @@ class TestSoftNewsURLCat(unittest.TestCase):
         pass
 
     def test_soft_news_url_cat_us(self):
-        df = pd.read_csv('notnews/tests/sample_us.csv')
-        odf = soft_news_url_cat_us(df, 'url')
-        self.assertIn('soft_lab', odf.columns)
+        df = pd.read_csv("notnews/tests/sample_us.csv")
+        odf = soft_news_url_cat_us(df, "url")
+        self.assertIn("soft_lab", odf.columns)
 
     def test_soft_news_url_cat_uk(self):
-        df = pd.read_csv('notnews/tests/sample_uk.csv')
-        odf = soft_news_url_cat_uk(df, 'url')
-        self.assertIn('soft_lab', odf.columns)
+        df = pd.read_csv("notnews/tests/sample_uk.csv")
+        odf = soft_news_url_cat_uk(df, "url")
+        self.assertIn("soft_lab", odf.columns)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

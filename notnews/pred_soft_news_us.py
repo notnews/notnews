@@ -6,29 +6,38 @@ import sys
 import argparse
 import joblib
 import pandas as pd
-import logging 
+import logging
 
-from sklearn.feature_extraction.text import TfidfTransformer
 
 from .pred_soft_news import SoftNewsModel
 from .normalizer import clean_text
 
 
 def custom_tokenizer(doc):
-    doc = re.sub('\d+', '[NUM]', doc)
+    doc = re.sub(r"\d+", "[NUM]", doc)
     return doc.split()
 
 
 class USSoftNewsModel(SoftNewsModel):
     MODELFN = "data/us_model/nyt_us_classifier.joblib"
     VECTFN = "data/us_model/nyt_us_vectorizer.joblib"
-    SOFT_NEWS_CAT = ['Arts', 'Books', 'Classifieds', 'Dining', 'Leisure',
-                     'Obits', 'Other', 'Real Estate', 'Style', 'Travel']
+    SOFT_NEWS_CAT = [
+        "Arts",
+        "Books",
+        "Classifieds",
+        "Dining",
+        "Leisure",
+        "Obits",
+        "Other",
+        "Real Estate",
+        "Style",
+        "Travel",
+    ]
     vect = None
     model = None
 
     @classmethod
-    def pred_soft_news_us(cls, df: pd.DataFrame, col='text', latest:bool=False):
+    def pred_soft_news_us(cls, df: pd.DataFrame, col="text", latest: bool = False):
         """Predict Soft News by the text using NYT Soft News model.
 
         Using the NYT Soft News model to predict the soft news of the input
@@ -54,29 +63,27 @@ class USSoftNewsModel(SoftNewsModel):
         if df[nn].shape[0] == 0:
             return df
 
-        df['__text'] = df[col].str.strip().str.lower()
+        df["__text"] = df[col].str.strip().str.lower()
 
         if cls.model is None:
             # FIXME: hook up custom_tokenizer to __main__
-            cls.main = sys.modules['__main__']
+            cls.main = sys.modules["__main__"]
             cls.main.custom_tokenizer = custom_tokenizer
             cls.model, cls.vect = cls.load_model_data(latest)
 
-        X = cls.vect.transform(df['__text'].astype(str))
-        tfidf = TfidfTransformer()
-        X = tfidf.fit_transform(X)
+        X = cls.vect.transform(df["__text"].astype(str))
         y_pred = cls.model.predict(X)
         y_prob = cls.model.predict_proba(X)
 
         # take out temporary working columns
-        del df['__text']
-        df['pred_what_news_us'] = y_pred
+        del df["__text"]
+        df["pred_what_news_us"] = y_pred
         prob_df = pd.DataFrame(y_prob)
         columns = []
         for c in cls.model.classes_:
             columns.append(c)
         prob_df.columns = columns
-        df['prob_soft_news_us'] = prob_df[cls.SOFT_NEWS_CAT].sum(axis=1)
+        df["prob_soft_news_us"] = prob_df[cls.SOFT_NEWS_CAT].sum(axis=1)
 
         return df
 
@@ -88,7 +95,7 @@ class USSoftNewsModel2(SoftNewsModel):
     model = None
 
     @classmethod
-    def pred_soft_news_us(cls, df:pd.DataFrame, col='text', latest:bool=False):
+    def pred_soft_news_us(cls, df: pd.DataFrame, col="text", latest: bool = False):
         """Predict Soft News by the text using NYT Soft News model.
 
         Using the NYT Soft News model to predict the soft news of the input
@@ -113,38 +120,44 @@ class USSoftNewsModel2(SoftNewsModel):
         if df[nn].shape[0] == 0:
             return df
 
-        df['__text'] = df[col].apply(lambda c: clean_text(c))
+        df["__text"] = df[col].apply(lambda c: clean_text(c))
 
         if cls.model is None:
             # FIXME: hook up custom_tokenizer to __main__
-            cls.main = sys.modules['__main__']
+            cls.main = sys.modules["__main__"]
             cls.main.custom_tokenizer = custom_tokenizer
             cls.model, cls.vect = cls.load_model_data(latest)
 
-        X = cls.vect.transform(df['__text'].astype(str))
-        tfidf = TfidfTransformer()
-        X = tfidf.fit_transform(X)
+        X = cls.vect.transform(df["__text"].astype(str))
 
         y_prob = cls.model.predict_proba(X)
-        df['prob_soft_news_us'] = y_prob[:, 1]
+        df["prob_soft_news_us"] = y_prob[:, 1]
 
         # take out temporary working columns
-        del df['__text']
+        del df["__text"]
 
         return df
+
 
 pred_soft_news_us = USSoftNewsModel2.pred_soft_news_us
 
 
 def main(argv=sys.argv[1:]):
-    title = 'Predict Soft News by text using NYT Soft News model'
+    title = "Predict Soft News by text using NYT Soft News model"
     parser = argparse.ArgumentParser(description=title)
-    parser.add_argument('input', default=None,
-                        help='Input file')
-    parser.add_argument('-o', '--output', default='pred-soft-news-us-output.csv',
-                        help='Output file with prediction data')
-    parser.add_argument('-t', '--text', default='text',
-                        help='Name of the column containing the text (default: text)')
+    parser.add_argument("input", default=None, help="Input file")
+    parser.add_argument(
+        "-o",
+        "--output",
+        default="pred-soft-news-us-output.csv",
+        help="Output file with prediction data",
+    )
+    parser.add_argument(
+        "-t",
+        "--text",
+        default="text",
+        help="Name of the column containing the text (default: text)",
+    )
 
     args = parser.parse_args(argv)
 

@@ -23,20 +23,20 @@ class TestPredSoftNews(unittest.TestCase):
         pass
 
     def test_pred_soft_news_us(self):
-        df = pd.read_csv('notnews/tests/sample_us.csv')
-        odf = pred_soft_news_us(df, 'text')
-        self.assertIn('prob_soft_news_us', odf.columns)
+        df = pd.read_csv("notnews/tests/sample_us.csv")
+        odf = pred_soft_news_us(df, "text")
+        self.assertIn("prob_soft_news_us", odf.columns)
 
     def test_pred_what_news_us(self):
-        df = pd.read_csv('notnews/tests/sample_us.csv')
-        odf = pred_what_news_us(df, 'text')
-        self.assertIn('pred_what_news_us', odf.columns)
+        df = pd.read_csv("notnews/tests/sample_us.csv")
+        odf = pred_what_news_us(df, "text")
+        self.assertIn("pred_what_news_us", odf.columns)
 
     def test_pred_soft_news_uk(self):
-        df = pd.read_csv('notnews/tests/sample_uk.csv')
-        odf = pred_soft_news_uk(df, 'text')
-        self.assertIn('prob_soft_news_uk', odf.columns)
+        df = pd.read_csv("notnews/tests/sample_uk.csv")
+        odf = pred_soft_news_uk(df, "text")
+        self.assertIn("prob_soft_news_uk", odf.columns)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

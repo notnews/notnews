@@ -8,14 +8,13 @@ import joblib
 import pandas as pd
 import logging
 
-from sklearn.feature_extraction.text import TfidfTransformer
 
 from .pred_soft_news import SoftNewsModel
 from .normalizer import clean_text
 
 
 def custom_tokenizer(doc):
-    doc = re.sub('\d+', '[NUM]', doc)
+    doc = re.sub(r"\d+", "[NUM]", doc)
     return doc.split()
 
 
@@ -26,7 +25,7 @@ class USWhatNewsModel(SoftNewsModel):
     model = None
 
     @classmethod
-    def pred_what_news_us(cls, df:pd.DataFrame, col:str='text', latest=False):
+    def pred_what_news_us(cls, df: pd.DataFrame, col: str = "text", latest=False):
         """Predict Soft News by the text using NYT Soft News model.
 
         Using the NYT Soft News model to predict the soft news of the input
@@ -54,28 +53,26 @@ class USWhatNewsModel(SoftNewsModel):
         if df[nn].shape[0] == 0:
             return df
 
-        df['__text'] = df[col].apply(lambda c: clean_text(c))
+        df["__text"] = df[col].apply(lambda c: clean_text(c))
 
         if cls.model is None:
             # FIXME: hook up custom_tokenizer to __main__
-            cls.main = sys.modules['__main__']
+            cls.main = sys.modules["__main__"]
             cls.main.custom_tokenizer = custom_tokenizer
             cls.model, cls.vect = cls.load_model_data(latest)
 
-        X = cls.vect.transform(df['__text'].astype(str))
-        tfidf = TfidfTransformer()
-        X = tfidf.fit_transform(X)
+        X = cls.vect.transform(df["__text"].astype(str))
         y_pred = cls.model.predict(X)
         y_prob = cls.model.predict_proba(X)
 
         # take out temporary working columns
-        del df['__text']
+        del df["__text"]
 
-        df['pred_what_news_us'] = y_pred
+        df["pred_what_news_us"] = y_pred
         prob_df = pd.DataFrame(y_prob)
         columns = []
         for c in cls.model.classes_:
-            columns.append('prob_' + c.replace(' ', '_').lower())
+            columns.append("prob_" + c.replace(" ", "_").lower())
         prob_df.columns = columns
         df.reset_index(inplace=True, drop=True)
         df = pd.concat([df, prob_df], axis=1)
@@ -87,14 +84,21 @@ pred_what_news_us = USWhatNewsModel.pred_what_news_us
 
 
 def main(argv=sys.argv[1:]):
-    title = 'Predict What News by text using NYT What News model'
+    title = "Predict What News by text using NYT What News model"
     parser = argparse.ArgumentParser(description=title)
-    parser.add_argument('input', default=None,
-                        help='Input file')
-    parser.add_argument('-o', '--output', default='pred-what-news-us-output.csv',
-                        help='Output file with prediction data')
-    parser.add_argument('-t', '--text', default='text',
-                        help='Name of the column containing the text (default: text)')
+    parser.add_argument("input", default=None, help="Input file")
+    parser.add_argument(
+        "-o",
+        "--output",
+        default="pred-what-news-us-output.csv",
+        help="Output file with prediction data",
+    )
+    parser.add_argument(
+        "-t",
+        "--text",
+        default="text",
+        help="Name of the column containing the text (default: text)",
+    )
 
     args = parser.parse_args(argv)
 

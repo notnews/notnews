@@ -7,7 +7,6 @@ import joblib
 import pandas as pd
 import logging
 
-from sklearn.feature_extraction.text import TfidfTransformer
 
 from .pred_soft_news import SoftNewsModel
 from .normalizer import clean_text
@@ -20,7 +19,9 @@ class UKSoftNewsModel(SoftNewsModel):
     model = None
 
     @classmethod
-    def pred_soft_news_uk(cls, df:pd.DataFrame, col:str='text', latest:bool=False):
+    def pred_soft_news_uk(
+        cls, df: pd.DataFrame, col: str = "text", latest: bool = False
+    ) -> pd.DataFrame:
         """Predict Soft News by the text using UK URL Soft News model.
 
         Using the URL Soft News model to predict the soft news of the input
@@ -44,19 +45,17 @@ class UKSoftNewsModel(SoftNewsModel):
         if df[nn].shape[0] == 0:
             return df
 
-        df['__text'] = df[col].apply(lambda c: clean_text(c))
+        df["__text"] = df[col].apply(lambda c: clean_text(c))
 
         if cls.model is None:
             cls.model, cls.vect = cls.load_model_data(latest)
 
-        X = cls.vect.transform(df['__text'].astype(str))
-        tfidf = TfidfTransformer()
-        X = tfidf.fit_transform(X)
+        X = cls.vect.transform(df["__text"].astype(str))
         y_prob = cls.model.predict_proba(X)
-        df['prob_soft_news_uk'] = y_prob[:, 1]
+        df["prob_soft_news_uk"] = y_prob[:, 1]
 
         # take out temporary working columns
-        del df['__text']
+        del df["__text"]
 
         return df
 
@@ -65,14 +64,21 @@ pred_soft_news_uk = UKSoftNewsModel.pred_soft_news_uk
 
 
 def main(argv=sys.argv[1:]):
-    title = 'Predict Soft News by text using UK URL Soft News model'
+    title = "Predict Soft News by text using UK URL Soft News model"
     parser = argparse.ArgumentParser(description=title)
-    parser.add_argument('input', default=None,
-                        help='Input file')
-    parser.add_argument('-o', '--output', default='pred-soft-news-uk-output.csv',
-                        help='Output file with prediction data')
-    parser.add_argument('-t', '--text', default='text',
-                        help='Name of column containing the text (default: text)')
+    parser.add_argument("input", default=None, help="Input file")
+    parser.add_argument(
+        "-o",
+        "--output",
+        default="pred-soft-news-uk-output.csv",
+        help="Output file with prediction data",
+    )
+    parser.add_argument(
+        "-t",
+        "--text",
+        default="text",
+        help="Name of column containing the text (default: text)",
+    )
 
     args = parser.parse_args(argv)
 

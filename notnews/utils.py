@@ -8,8 +8,11 @@ from tqdm import tqdm
 import requests
 import logging
 
-REPO_BASE_URL = (os.environ.get('NOTNEWS_DATA_URL') or
-                 'https://github.com/notnews/notnews/raw/master/notnews/')
+REPO_BASE_URL = (
+    os.environ.get("NOTNEWS_DATA_URL")
+    or "https://github.com/notnews/notnews/raw/master/notnews/"
+)
+
 
 def find_ngrams(vocab: list, text: str, n: int):
     """Find and return list of the index of n-grams in the vocabulary list.
@@ -31,7 +34,7 @@ def find_ngrams(vocab: list, text: str, n: int):
 
     a = zip(*[text[i:] for i in range(n)])
     for i in a:
-        w = ''.join(i)
+        w = "".join(i)
         try:
             idx = vocab.index(w)
         except Exception as e:
@@ -41,8 +44,8 @@ def find_ngrams(vocab: list, text: str, n: int):
 
 
 def get_app_file_path(app_name, filename):
-    user_dir = path.expanduser('~')
-    app_data_dir = path.join(user_dir, '.' + app_name)
+    user_dir = path.expanduser("~")
+    app_data_dir = path.join(user_dir, "." + app_name)
     if not path.exists(app_data_dir):
         os.makedirs(app_data_dir)
     file_path = path.join(app_data_dir, filename)
@@ -51,9 +54,9 @@ def get_app_file_path(app_name, filename):
 
 def download_file(url, target):
 
-    if 'NOTNEWS_AUTH_TOKEN' in os.environ:
-        auth_token = os.environ['NOTNEWS_AUTH_TOKEN']
-        headers = {'Authorization': 'token {0!s}'.format(auth_token)}
+    if "NOTNEWS_AUTH_TOKEN" in os.environ:
+        auth_token = os.environ["NOTNEWS_AUTH_TOKEN"]
+        headers = {"Authorization": "token {0!s}".format(auth_token)}
     else:
         headers = {}
 
@@ -61,14 +64,19 @@ def download_file(url, target):
     r = requests.get(url, stream=True, headers=headers)
 
     if r.status_code == 200:
-        chunk_size = (64 * 1024)
+        chunk_size = 64 * 1024
         # Total size in bytes.
-        total_size = int(r.headers.get('content-length', 0)) / chunk_size
+        total_size = int(r.headers.get("content-length", 0)) / chunk_size
 
         total_size += 1
 
-        with open(target, 'wb') as f:
-            for data in tqdm(r.iter_content(chunk_size), total=total_size, unit_scale=chunk_size/1024, unit='KB'):
+        with open(target, "wb") as f:
+            for data in tqdm(
+                r.iter_content(chunk_size),
+                total=total_size,
+                unit_scale=chunk_size / 1024,
+                unit="KB",
+            ):
                 f.write(data)
         return True
     else:
