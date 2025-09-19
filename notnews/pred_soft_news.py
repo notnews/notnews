@@ -25,7 +25,7 @@ class SoftNewsModel(object):
     @classmethod
     def load_model_data(cls, latest: bool = False):
         if cls.MODELFN:
-            model_fn = str(files(__name__).joinpath(cls.MODELFN))
+            model_fn = str(files("notnews").joinpath(cls.MODELFN))
             path = os.path.dirname(model_fn)
             if not os.path.exists(path):
                 os.makedirs(path)
@@ -37,7 +37,7 @@ class SoftNewsModel(object):
             else:
                 print(f"Using model data from {model_fn}...")
         if cls.VECTFN:
-            vect_fn = str(files(__name__).joinpath(cls.VECTFN))
+            vect_fn = str(files("notnews").joinpath(cls.VECTFN))
             path = os.path.dirname(vect_fn)
             if not os.path.exists(path):
                 os.makedirs(path)
