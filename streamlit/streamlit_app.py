@@ -15,10 +15,10 @@ if st.button("Transform Data"):
     if uploaded_file is not None:
         # Read the uploaded CSV file into a Pandas DataFrame
         df = pd.read_csv(uploaded_file)
-        
+
         # Use the package to transform the DataFrame
-        transformed_df = soft_news_url_cat_us(df, col='url')
-        
+        transformed_df = soft_news_url_cat_us(df, col="url")
+
         # Display the transformed DataFrame as a table
         st.write(transformed_df)
     else:
