@@ -32,7 +32,8 @@ dependencies = [
     "joblib",
     "tqdm",
     "nltk",
-    "requests"
+    "requests",
+    "beautifulsoup4>=4.11.0"
 ]
 
 [project.optional-dependencies]
@@ -49,6 +50,10 @@ docs = [
     "sphinx-rtd-theme>=1.2.0",
     "toml"
 ]
+llm = [
+    "anthropic>=0.18.0",
+    "openai>=1.12.0"
+]
 
 [project.urls]
 Homepage = "https://github.com/notnews/notnews"
@@ -62,6 +67,7 @@ pred_soft_news_us = "notnews.pred_soft_news_us:main"
 pred_what_news_us = "notnews.pred_what_news_us:main"
 soft_news_url_cat_uk = "notnews.soft_news_url_cat_uk:main"
 pred_soft_news_uk = "notnews.pred_soft_news_uk:main"
+llm_classify_news = "notnews.llm_classify:main"
 
 [tool.setuptools]
 packages = ["notnews"]

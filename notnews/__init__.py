@@ -3,6 +3,7 @@ from .pred_soft_news_us import pred_soft_news_us
 from .pred_what_news_us import pred_what_news_us
 from .soft_news_url_cat_uk import soft_news_url_cat_uk
 from .pred_soft_news_uk import pred_soft_news_uk
+from .llm_classifier import llm_classify_news, DEFAULT_CATEGORIES
 
 __all__ = [
     "soft_news_url_cat_us",
@@ -10,4 +11,6 @@ __all__ = [
     "pred_what_news_us",
     "soft_news_url_cat_uk",
     "pred_soft_news_uk",
+    "llm_classify_news",
+    "DEFAULT_CATEGORIES",
 ]
