@@ -1,19 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import argparse
+import logging
 import os
 import re
 import sys
-import argparse
+
 import joblib
-import logging
 
 try:
     from importlib.resources import files
 except ImportError:
     # Fallback for Python < 3.9
     from importlib_resources import files
-from .utils import download_file, REPO_BASE_URL
+
+from .utils import REPO_BASE_URL, download_file
 
 
 class SoftNewsModel(object):

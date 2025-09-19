@@ -8,10 +8,11 @@ Provides web content fetching, text extraction, and content cleaning utilities.
 """
 
 import logging
-import requests
-from typing import Optional, Dict, Any
-from bs4 import BeautifulSoup
+from typing import Any, Dict, Optional
 from urllib.parse import urlparse
+
+import requests
+from bs4 import BeautifulSoup
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import argparse
+import logging
 import re
 import sys
-import argparse
+
 import joblib
 import pandas as pd
-import logging
 
-
-from .pred_soft_news import SoftNewsModel
 from .normalizer import clean_text
+from .pred_soft_news import SoftNewsModel
 
 
 def custom_tokenizer(doc):

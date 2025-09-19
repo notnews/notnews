@@ -2,13 +2,14 @@ import nltk
 
 nltk.download("stopwords")
 nltk.download("punkt")
+import logging
 import re
 import string
-from nltk.corpus import stopwords
-from nltk import word_tokenize
-from nltk.stem.porter import PorterStemmer
-import logging
 from typing import List
+
+from nltk import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem.porter import PorterStemmer
 
 stemmer = PorterStemmer()
 

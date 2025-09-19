@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import argparse
 import re
 import sys
-import argparse
+
 import pandas as pd
 
 from .soft_news_url_cat import SoftNewsURLCategorizer

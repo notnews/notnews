@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import sys
-import os
-from os import path
-import pandas as pd
-from tqdm import tqdm
-import requests
 import logging
+import os
+import sys
+from os import path
+
+import pandas as pd
+import requests
+from tqdm import tqdm
 
 REPO_BASE_URL = (
     os.environ.get("NOTNEWS_DATA_URL")

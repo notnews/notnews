@@ -8,10 +8,10 @@ This module implements the ClaudeNewsClassifier using Anthropic's Claude API
 for news article classification.
 """
 
-import os
 import json
 import logging
-from typing import Dict, Optional, Any
+import os
+from typing import Any, Dict, Optional
 
 try:
     from anthropic import Anthropic

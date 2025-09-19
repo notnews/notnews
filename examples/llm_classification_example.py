@@ -8,9 +8,11 @@ This example demonstrates how to classify news articles using
 Large Language Models (Claude and OpenAI) with the notnews package.
 """
 
-import pandas as pd
 import os
-from notnews import llm_classify_news, DEFAULT_CATEGORIES
+
+import pandas as pd
+
+from notnews import DEFAULT_CATEGORIES, llm_classify_news
 
 
 def basic_classification_example():

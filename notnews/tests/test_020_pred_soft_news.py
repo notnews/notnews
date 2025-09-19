@@ -9,8 +9,11 @@ Tests for Soft News categorize by URL pattern
 import os
 import shutil
 import unittest
+
 import pandas as pd
-from notnews import pred_soft_news_us, pred_what_news_us, pred_soft_news_uk
+
+from notnews import pred_soft_news_uk, pred_soft_news_us, pred_what_news_us
+
 from . import capture
 
 

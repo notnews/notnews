@@ -8,10 +8,11 @@ This module provides news classification using Large Language Models (LLMs)
 like Claude and OpenAI, with support for custom categories and web content fetching.
 """
 
-import time
 import logging
+import time
 from abc import ABC, abstractmethod
-from typing import Dict, Optional, Any
+from typing import Any, Dict, Optional
+
 import pandas as pd
 
 # Default news categories with descriptions and examples

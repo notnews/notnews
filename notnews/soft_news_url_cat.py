@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import argparse
+import logging
 import re
 import sys
-import argparse
+
 import pandas as pd
-import logging
 
 
 class SoftNewsURLCategorizer(object):

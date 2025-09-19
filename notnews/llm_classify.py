@@ -9,12 +9,13 @@ using Large Language Models (Claude and OpenAI), following the same patterns
 as existing notnews classifiers.
 """
 
-import sys
 import argparse
 import logging
+import sys
+
 import pandas as pd
 
-from .llm_classifier import llm_classify_news, DEFAULT_CATEGORIES
+from .llm_classifier import DEFAULT_CATEGORIES, llm_classify_news
 
 
 def main(argv=sys.argv[1:]):

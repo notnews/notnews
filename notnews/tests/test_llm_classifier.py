@@ -8,13 +8,14 @@ This module tests the LLM classification functionality including
 category management, API key validation, and classification results.
 """
 
-import unittest
-import pandas as pd
-from unittest.mock import patch, MagicMock
 import json
 import os
+import unittest
+from unittest.mock import MagicMock, patch
 
-from ..llm_classifier import LLMNewsClassifier, llm_classify_news, DEFAULT_CATEGORIES
+import pandas as pd
+
+from ..llm_classifier import DEFAULT_CATEGORIES, LLMNewsClassifier, llm_classify_news
 
 
 class TestLLMClassifier(unittest.TestCase):
