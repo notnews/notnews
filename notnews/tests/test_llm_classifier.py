@@ -253,14 +253,18 @@ class TestCLIInterface(unittest.TestCase):
 
     @patch("pandas.read_csv")
     @patch("notnews.llm_classify.llm_classify_news")
+    @patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"})
     def test_cli_basic_usage(self, mock_classify, mock_read_csv):
         """Test basic CLI usage."""
         from ..llm_classify import main
 
         # Setup mocks
         mock_df = pd.DataFrame({"text": ["Article 1", "Article 2"]})
+        mock_result_df = mock_df.copy()
+        mock_result_df["llm_category_claude"] = ["hard_news", "soft_news"]
+        mock_result_df["llm_confidence_claude"] = [0.9, 0.8]
         mock_read_csv.return_value = mock_df
-        mock_classify.return_value = mock_df
+        mock_classify.return_value = mock_result_df
 
         # Test with minimal arguments
         with patch("pandas.DataFrame.to_csv") as mock_to_csv:
@@ -292,8 +296,11 @@ class TestCLIInterface(unittest.TestCase):
 
         # Setup mocks
         mock_df = pd.DataFrame({"text": ["Article"], "url": ["example.com"]})
+        mock_result_df = mock_df.copy()
+        mock_result_df["llm_category_claude"] = ["hard_news"]
+        mock_result_df["llm_confidence_claude"] = [0.9]
         mock_read_csv.return_value = mock_df
-        mock_classify.return_value = mock_df
+        mock_classify.return_value = mock_result_df
 
         with patch("pandas.DataFrame.to_csv"):
             result = main(

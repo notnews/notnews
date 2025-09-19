@@ -2,6 +2,7 @@ import nltk
 
 nltk.download("stopwords")
 nltk.download("punkt")
+nltk.download("punkt_tab")
 import logging
 import re
 import string
