@@ -5,7 +5,12 @@
 [![Build and Deploy Documentation](https://github.com/notnews/notnews/actions/workflows/docs.yml/badge.svg)](https://github.com/notnews/notnews/actions/workflows/docs.yml)
 [![Downloads](https://static.pepy.tech/badge/notnews)](https://pepy.tech/project/notnews)
 
-The package provides classifiers for soft news based on the story text and the url structure for both the US and UK news media. We provide also provide a way to infer the 'kind' of news---Arts, Books, Science, Sports, Travel, etc.---for the US news media.
+The package provides classifiers for soft news based on story text and URL structure for both US and UK news media. We also provide ways to infer the 'kind' of news---Arts, Books, Science, Sports, Travel, etc.---for US news media.
+
+**Modern Features:**
+- **Traditional ML classifiers** - Fast, offline classification using trained models
+- **LLM-based classification** - Flexible classification using Claude and OpenAI with custom categories
+- **Web content fetching** - Automatically fetch and classify content from URLs
 
 **Streamlit App:** https://notnews-notnews-streamlitstreamlit-app-u8j3a6.streamlit.app/
 
@@ -95,7 +100,7 @@ This package includes automatic compatibility layers to ensure models trained wi
 
 ## API
 
-For detailed API documentation including all 5 functions (soft_news_url_cat_us, pred_soft_news_us, pred_what_news_us, soft_news_url_cat_uk, pred_soft_news_uk), command line usage, and examples, please see [project documentation](http://notnews.readthedocs.io/en/latest/).
+For detailed API documentation including all 6 functions (soft_news_url_cat_us, pred_soft_news_us, pred_what_news_us, soft_news_url_cat_uk, pred_soft_news_uk, llm_classify_news), command line usage, and examples, please see [project documentation](http://notnews.readthedocs.io/en/latest/).
 
 ## Underlying Data
 

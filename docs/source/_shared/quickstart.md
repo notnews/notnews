@@ -57,3 +57,26 @@ soft_news_url_cat(df, col='url') method of builtins.type instance
 9             nyt  http://www.nytimes.com/2016/09/06/obituaries/p...  Shes an extremely liberated woman Ms. DeCrow s...       NaN       NaN
 >>>
 ```
+
+### LLM-based Classification
+
+```python
+>>> from notnews import llm_classify_news
+>>>
+>>> # Modern LLM classification with Claude or OpenAI
+>>> # Requires: pip install notnews[llm] and ANTHROPIC_API_KEY env var
+>>> 
+>>> df_sample = pd.DataFrame({
+...     'text': [
+...         'Federal Reserve raises interest rates by 0.25% citing inflation',
+...         'Taylor Swift breaks attendance records at sold-out concert'
+...     ]
+... })
+>>>
+>>> result = llm_classify_news(df_sample, provider='claude')
+>>> print(result[['text', 'llm_category_claude', 'llm_confidence_claude']])
+                                               text llm_category_claude  llm_confidence_claude
+0  Federal Reserve raises interest rates by 0.25...           hard_news                   0.95
+1  Taylor Swift breaks attendance records at sol...           soft_news                   0.92
+>>>
+```

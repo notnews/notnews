@@ -85,11 +85,26 @@ For faster installation using UV:
 uv add {project_metadata.get('name', 'notnews')}
 ```
 
+### Optional Dependencies
+
+For LLM-based classification with Claude and OpenAI:
+
+```bash
+pip install {project_metadata.get('name', 'notnews')}[llm]
+# or
+uv add {project_metadata.get('name', 'notnews')} --extra llm
+```
+
 ### Requirements
 
 - Python {', '.join(python_versions)}
 - scikit-learn 1.3+ (models trained with sklearn 0.22+ are automatically compatible)
 - pandas, numpy, nltk, and other standard scientific Python packages
+
+### LLM Requirements (Optional)
+
+- anthropic>=0.18.0 (for Claude)
+- openai>=1.12.0 (for OpenAI)
 
 ### Compatibility
 

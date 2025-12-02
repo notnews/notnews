@@ -1,4 +1,4 @@
-## API
+## Traditional ML-based API
 
 ### 1. soft_news_url_cat_us
 

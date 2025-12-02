@@ -1,6 +1,38 @@
 ## Command Line
 
-We also implement the scripts to process the input file in the CSV format:
+We provide scripts to process input files in CSV format for both traditional ML and LLM-based classification:
+
+### LLM-based Classification
+
+#### llm_classify_news
+
+```
+usage: llm_classify_news [-h] [-o OUTPUT] [-t TEXT] [-p {claude,openai}] 
+                         [-f] [-u URL] input
+
+Classify news articles using Large Language Models (Claude/OpenAI)
+
+positional arguments:
+input                 Input CSV file containing articles to classify
+
+optional arguments:
+-h, --help            show this help message and exit
+-o OUTPUT, --output OUTPUT
+                        Output file with classification results 
+                        (default: llm-news-classification-output.csv)
+-t TEXT, --text TEXT  Name of column containing text to classify (default: text)
+-p {claude,openai}, --provider {claude,openai}
+                        LLM provider to use (default: claude)
+-f, --fetch-content   Fetch full content from URLs before classification
+-u URL, --url URL     Column name containing URLs if fetch-content is enabled 
+                        (default: url)
+```
+
+**Note:** Requires API keys set as environment variables:
+- `ANTHROPIC_API_KEY` for Claude
+- `OPENAI_API_KEY` for OpenAI
+
+### Traditional ML Classification
 
 ### 1. soft_news_url_cat_us
 
