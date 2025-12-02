@@ -34,7 +34,7 @@ def find_ngrams(vocab: list, text: str, n: int):
         w = "".join(i)
         try:
             idx = vocab.index(w)
-        except Exception:
+        except (ValueError, IndexError):
             idx = 0
         wi.append(idx)
     return wi

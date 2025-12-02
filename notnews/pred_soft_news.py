@@ -2,6 +2,7 @@
 
 import logging
 import os
+import warnings
 
 import joblib
 
@@ -49,8 +50,17 @@ class SoftNewsModel:
 
         logging.info("Loading the model and vectorizer data file...")
 
-        model = joblib.load(model_fn)
-        vect = joblib.load(vect_fn)
+        # Temporarily suppress sklearn compatibility warnings during model loading
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                category=UserWarning,
+                message=".*Trying to unpickle estimator.*",
+            )
+            warnings.filterwarnings("ignore", module="sklearn.base")
+
+            model = joblib.load(model_fn)
+            vect = joblib.load(vect_fn)
 
         # Fix vectorizer compatibility issues
         _fix_vectorizer_compatibility(vect)

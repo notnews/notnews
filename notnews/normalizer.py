@@ -36,6 +36,9 @@ def clean_text(text: str) -> str:
         tokens = [t for t in tokens if t not in stopwords.words("english")]
         stems = stem_tokens(tokens, stemmer)
         return " ".join(stems)
+    except (AttributeError, ValueError, LookupError) as e:
+        logging.exception(f"Text cleaning failed: {e}")
+        return text
     except Exception as e:
-        logging.exception(f"An error occurred: {e}")
+        logging.exception(f"Unexpected error in text cleaning: {e}")
         return text

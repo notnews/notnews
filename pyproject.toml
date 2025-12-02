@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "notnews"
-version = "0.2.4"
+version = "0.2.5"
 description = "Predict Soft News"
 readme = "README.md"
 license = { text = "MIT" }
@@ -17,7 +17,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -25,7 +24,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Utilities"
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "numpy>=1.22.0,<2.0.0",
     "pandas>=1.3.0",
@@ -95,7 +94,7 @@ exclude = [
 # Ruff configuration
 [tool.ruff]
 line-length = 88
-target-version = "py310"
+target-version = "py311"
 exclude = [
     ".git",
     "__pycache__",
@@ -132,15 +131,13 @@ known-first-party = ["notnews"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-testpaths = ["notnews/tests"]
+testpaths = ["tests"]
 python_files = "test_*.py"
 addopts = [
     "-ra",
     "--strict-markers",
     "--cov=notnews",
     "--cov-report=term-missing",
-    "--cov-report=html",
-    "--cov-report=xml",
 ]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
@@ -149,7 +146,7 @@ markers = [
 # Black configuration
 [tool.black]
 line-length = 88
-target-version = ["py310", "py311", "py312"]
+target-version = ["py311", "py312", "py313"]
 
 # isort configuration
 [tool.isort]
@@ -159,7 +156,7 @@ known-first-party = ["notnews"]
 
 # mypy configuration
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 warn_return_any = true
 warn_unused_configs = true
 check_untyped_defs = true

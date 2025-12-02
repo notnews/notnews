@@ -85,7 +85,7 @@ uv add notnews
 
 ### Requirements
 
-- Python 3.10, 3.11, 3.12, or 3.13
+- Python 3.11, 3.12, or 3.13
 - scikit-learn 1.3+ (models trained with sklearn 0.22+ are automatically compatible)
 - pandas, numpy, nltk, and other standard scientific Python packages
 

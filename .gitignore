@@ -12,3 +12,9 @@ dist
 build
 dev/
 .DS_Store
+
+# Coverage files
+coverage.xml
+.coverage
+htmlcov/
+.pytest_cache/

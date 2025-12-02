@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.5] - 2025-12-02
+
+### Added
+- **Python 3.11+ requirement**: Dropped Python 3.10 support for modern Python features
+- **Enhanced exception handling**: More specific exception types and improved error messages
+- **Code modernization**: Leveraged Python 3.11+ features for better performance and maintainability
+
+### Removed
+- **Python 3.10 support**: Minimum version now Python 3.11
+
 ## [0.2.4] - 2025-12-02
 
 ### Added
