@@ -1,11 +1,7 @@
-# -*- coding: utf-8 -*-
-
 import logging
 import os
-import sys
 from os import path
 
-import pandas as pd
 import requests
 from tqdm import tqdm
 
@@ -33,12 +29,12 @@ def find_ngrams(vocab: list, text: str, n: int):
 
     wi = []
 
-    a = zip(*[text[i:] for i in range(n)])
+    a = zip(*[text[i:] for i in range(n)], strict=False)
     for i in a:
         w = "".join(i)
         try:
             idx = vocab.index(w)
-        except Exception as e:
+        except Exception:
             idx = 0
         wi.append(idx)
     return wi
@@ -54,10 +50,9 @@ def get_app_file_path(app_name, filename):
 
 
 def download_file(url, target):
-
     if "NOTNEWS_AUTH_TOKEN" in os.environ:
         auth_token = os.environ["NOTNEWS_AUTH_TOKEN"]
-        headers = {"Authorization": "token {0!s}".format(auth_token)}
+        headers = {"Authorization": f"token {auth_token!s}"}
     else:
         headers = {}
 

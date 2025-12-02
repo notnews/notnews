@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 CLI interface for LLM-based news classification.
@@ -125,7 +124,7 @@ def main(argv=sys.argv[1:]):
         try:
             import json
 
-            with open(args.categories, "r") as f:
+            with open(args.categories) as f:
                 categories = json.load(f)
             logger.info(f"Loaded custom categories from {args.categories}")
         except Exception as e:
@@ -186,7 +185,7 @@ def main(argv=sys.argv[1:]):
             category_counts = result_df[category_col].value_counts()
             logger.info("Category distribution:")
             for cat, count in category_counts.items():
-                logger.info(f"  {cat}: {count} ({count/classified_count*100:.1f}%)")
+                logger.info(f"  {cat}: {count} ({count / classified_count * 100:.1f}%)")
 
     except Exception as e:
         logger.error(f"Classification failed: {e}")

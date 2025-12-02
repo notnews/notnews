@@ -1,15 +1,10 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-import argparse
-import logging
-import re
-import sys
 
 import pandas as pd
 
 
-class SoftNewsURLCategorizer(object):
+class SoftNewsURLCategorizer:
     hard_lab = None
     soft_lab = None
 

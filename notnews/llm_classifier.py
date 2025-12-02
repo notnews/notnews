@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 LLM-based news classification module for notnews.
@@ -11,7 +10,7 @@ like Claude and OpenAI, with support for custom categories and web content fetch
 import logging
 import time
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any
 
 import pandas as pd
 
@@ -99,7 +98,7 @@ class LLMNewsClassifier(ABC):
     providing a consistent interface for different LLM providers.
     """
 
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, api_key: str | None = None):
         """Initialize the classifier with optional API key."""
         self.api_key = api_key or self._get_api_key_from_env()
         self.categories = DEFAULT_CATEGORIES.copy()
@@ -107,12 +106,12 @@ class LLMNewsClassifier(ABC):
         self.provider = "base"
 
     @abstractmethod
-    def _get_api_key_from_env(self) -> Optional[str]:
+    def _get_api_key_from_env(self) -> str | None:
         """Get API key from environment variables."""
         pass
 
     @abstractmethod
-    def _classify_text(self, text: str, categories: Dict[str, Dict]) -> Dict[str, Any]:
+    def _classify_text(self, text: str, categories: dict[str, dict]) -> dict[str, Any]:
         """
         Classify a single text using the LLM.
 
@@ -135,7 +134,7 @@ class LLMNewsClassifier(ABC):
             return False
         return True
 
-    def set_categories(self, categories: Dict[str, Dict]):
+    def set_categories(self, categories: dict[str, dict]):
         """Set custom categories for classification."""
         self.categories = categories
 
@@ -143,7 +142,7 @@ class LLMNewsClassifier(ABC):
         """Set custom prompt template."""
         self.prompt_template = template
 
-    def format_categories_for_prompt(self, categories: Dict[str, Dict]) -> str:
+    def format_categories_for_prompt(self, categories: dict[str, dict]) -> str:
         """Format categories dictionary for inclusion in prompt."""
         formatted = []
         for name, info in categories.items():
@@ -160,7 +159,7 @@ class LLMNewsClassifier(ABC):
         self,
         df: pd.DataFrame,
         col: str = "text",
-        categories: Optional[Dict[str, Dict]] = None,
+        categories: dict[str, dict] | None = None,
         fetch_content: bool = False,
         url_col: str = "url",
     ) -> pd.DataFrame:
@@ -228,7 +227,7 @@ class LLMNewsClassifier(ABC):
 
         return df
 
-    def handle_rate_limit(self, retry_after: Optional[int] = None):
+    def handle_rate_limit(self, retry_after: int | None = None):
         """Handle rate limiting with exponential backoff."""
         wait_time = retry_after or 1
         logging.info(f"Rate limited. Waiting {wait_time} seconds...")
@@ -239,8 +238,8 @@ def llm_classify_news(
     df: pd.DataFrame,
     col: str = "text",
     provider: str = "claude",
-    categories: Optional[Dict[str, Dict]] = None,
-    api_key: Optional[str] = None,
+    categories: dict[str, dict] | None = None,
+    api_key: str | None = None,
     fetch_content: bool = False,
     url_col: str = "url",
 ) -> pd.DataFrame:

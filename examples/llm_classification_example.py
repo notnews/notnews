@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Example usage of LLM-based news classification in notnews.
@@ -12,7 +11,7 @@ import os
 
 import pandas as pd
 
-from notnews import DEFAULT_CATEGORIES, llm_classify_news
+from notnews import llm_classify_news
 
 
 def basic_classification_example():

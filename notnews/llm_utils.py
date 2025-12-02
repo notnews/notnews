@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Utilities for LLM-based news classification.
@@ -8,7 +7,7 @@ Provides web content fetching, text extraction, and content cleaning utilities.
 """
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 from urllib.parse import urlparse
 
 import requests
@@ -31,7 +30,7 @@ DEFAULT_HEADERS = {
 }
 
 
-def fetch_web_content(url: str, timeout: int = 10) -> Optional[str]:
+def fetch_web_content(url: str, timeout: int = 10) -> str | None:
     """
     Fetch and extract text content from a web page.
 
@@ -143,7 +142,7 @@ def clean_text_content(text: str) -> str:
     return text.strip()
 
 
-def extract_article_metadata(url: str, html_content: str = None) -> Dict[str, Any]:
+def extract_article_metadata(url: str, html_content: str = None) -> dict[str, Any]:
     """
     Extract metadata from an article page.
 
@@ -218,7 +217,7 @@ def extract_article_metadata(url: str, html_content: str = None) -> Dict[str, An
 
 def prepare_content_for_llm(
     text: str,
-    url: Optional[str] = None,
+    url: str | None = None,
     fetch_full: bool = False,
     include_metadata: bool = True,
 ) -> str:

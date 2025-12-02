@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Tests for LLM-based news classification.
@@ -8,14 +7,13 @@ This module tests the LLM classification functionality including
 category management, API key validation, and classification results.
 """
 
-import json
 import os
 import unittest
 from unittest.mock import MagicMock, patch
 
 import pandas as pd
 
-from ..llm_classifier import DEFAULT_CATEGORIES, LLMNewsClassifier, llm_classify_news
+from notnews.llm_classifier import DEFAULT_CATEGORIES, llm_classify_news
 
 
 class TestLLMClassifier(unittest.TestCase):
@@ -49,7 +47,7 @@ class TestLLMClassifier(unittest.TestCase):
         self.assertIn("feature", DEFAULT_CATEGORIES)
 
         # Check structure
-        for cat, info in DEFAULT_CATEGORIES.items():
+        for _cat, info in DEFAULT_CATEGORIES.items():
             self.assertIn("description", info)
             self.assertIn("examples", info)
             self.assertIsInstance(info["examples"], list)
@@ -160,7 +158,7 @@ class TestLLMUtils(unittest.TestCase):
 
     def test_truncate_for_token_limit(self):
         """Test text truncation for token limits."""
-        from ..llm_utils import truncate_for_token_limit
+        from notnews.llm_utils import truncate_for_token_limit
 
         # Short text should not be truncated
         short_text = "This is a short text."
@@ -175,7 +173,7 @@ class TestLLMUtils(unittest.TestCase):
 
     def test_clean_text_content(self):
         """Test text cleaning functionality."""
-        from ..llm_utils import clean_text_content
+        from notnews.llm_utils import clean_text_content
 
         # Test removing excessive whitespace
         messy_text = "This   has    too     much\n\n\nwhitespace"
@@ -194,7 +192,7 @@ class TestLLMUtils(unittest.TestCase):
     @patch("requests.get")
     def test_fetch_web_content_success(self, mock_get):
         """Test successful web content fetching."""
-        from ..llm_utils import fetch_web_content
+        from notnews.llm_utils import fetch_web_content
 
         # Setup mock response
         mock_response = MagicMock()
@@ -221,7 +219,7 @@ class TestLLMUtils(unittest.TestCase):
     @patch("requests.get")
     def test_fetch_web_content_failure(self, mock_get):
         """Test handling of web content fetch failures."""
-        from ..llm_utils import fetch_web_content
+        from notnews.llm_utils import fetch_web_content
 
         # Setup mock to raise exception
         mock_get.side_effect = Exception("Network error")
@@ -234,7 +232,7 @@ class TestLLMUtils(unittest.TestCase):
 
     def test_prepare_content_for_llm(self):
         """Test content preparation for LLM processing."""
-        from ..llm_utils import prepare_content_for_llm
+        from notnews.llm_utils import prepare_content_for_llm
 
         # Test basic text preparation
         text = "This is the article text."
@@ -256,7 +254,7 @@ class TestCLIInterface(unittest.TestCase):
     @patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"})
     def test_cli_basic_usage(self, mock_classify, mock_read_csv):
         """Test basic CLI usage."""
-        from ..llm_classify import main
+        from notnews.llm_classify import main
 
         # Setup mocks
         mock_df = pd.DataFrame({"text": ["Article 1", "Article 2"]})
@@ -277,7 +275,7 @@ class TestCLIInterface(unittest.TestCase):
     @patch("pandas.read_csv")
     def test_cli_missing_column(self, mock_read_csv):
         """Test CLI error handling for missing column."""
-        from ..llm_classify import main
+        from notnews.llm_classify import main
 
         # Setup mock with missing column
         mock_df = pd.DataFrame({"content": ["Article 1"]})
@@ -292,7 +290,7 @@ class TestCLIInterface(unittest.TestCase):
     @patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"})
     def test_cli_with_options(self, mock_classify, mock_read_csv):
         """Test CLI with various options."""
-        from ..llm_classify import main
+        from notnews.llm_classify import main
 
         # Setup mocks
         mock_df = pd.DataFrame({"text": ["Article"], "url": ["example.com"]})

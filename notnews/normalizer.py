@@ -1,16 +1,14 @@
+import logging
+import re
+import string
+
 import nltk
+from nltk.corpus import stopwords
+from nltk.stem.porter import PorterStemmer
 
 nltk.download("stopwords")
 nltk.download("punkt")
 nltk.download("punkt_tab")
-import logging
-import re
-import string
-from typing import List
-
-from nltk import word_tokenize
-from nltk.corpus import stopwords
-from nltk.stem.porter import PorterStemmer
 
 stemmer = PorterStemmer()
 
@@ -22,7 +20,7 @@ def stem_tokens(tokens, stemmer):
     return stemmed
 
 
-def tokenize(text: str) -> List[str]:
+def tokenize(text: str) -> list[str]:
     text = "".join([ch for ch in text if ch not in string.punctuation])
     tokens = nltk.word_tokenize(text)
     stems = stem_tokens(tokens, stemmer)

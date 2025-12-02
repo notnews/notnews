@@ -1,6 +1,5 @@
 import pandas as pd
 
-import notnews
 import streamlit as st
 from notnews import soft_news_url_cat_us
 

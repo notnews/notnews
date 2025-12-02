@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 OpenAI-based news classification implementation for notnews.
@@ -11,7 +10,7 @@ for news article classification.
 import json
 import logging
 import os
-from typing import Any, Dict, Optional
+from typing import Any
 
 try:
     from openai import OpenAI
@@ -35,7 +34,7 @@ class OpenAINewsClassifier(LLMNewsClassifier):
     with confidence scores and reasoning.
     """
 
-    def __init__(self, api_key: Optional[str] = None, model: str = "gpt-3.5-turbo"):
+    def __init__(self, api_key: str | None = None, model: str = "gpt-3.5-turbo"):
         """
         Initialize OpenAI classifier.
 
@@ -62,7 +61,7 @@ class OpenAINewsClassifier(LLMNewsClassifier):
                     "No API key provided for OpenAI. Set OPENAI_API_KEY environment variable."
                 )
 
-    def _get_api_key_from_env(self) -> Optional[str]:
+    def _get_api_key_from_env(self) -> str | None:
         """Get API key from environment variables."""
         return os.getenv("OPENAI_API_KEY")
 
@@ -89,7 +88,7 @@ class OpenAINewsClassifier(LLMNewsClassifier):
 
         return True
 
-    def _classify_text(self, text: str, categories: Dict[str, Dict]) -> Dict[str, Any]:
+    def _classify_text(self, text: str, categories: dict[str, dict]) -> dict[str, Any]:
         """
         Classify a single text using OpenAI API.
 
@@ -198,7 +197,7 @@ class OpenAINewsClassifier(LLMNewsClassifier):
 
 
 def create_openai_classifier(
-    api_key: Optional[str] = None, model: str = "gpt-3.5-turbo"
+    api_key: str | None = None, model: str = "gpt-3.5-turbo"
 ) -> OpenAINewsClassifier:
     """
     Factory function to create an OpenAI news classifier.

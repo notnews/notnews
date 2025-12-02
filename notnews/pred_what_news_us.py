@@ -1,12 +1,9 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import argparse
-import logging
 import re
 import sys
 
-import joblib
 import pandas as pd
 
 from .normalizer import clean_text

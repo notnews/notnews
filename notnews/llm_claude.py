@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Claude-based news classification implementation for notnews.
@@ -11,7 +10,7 @@ for news article classification.
 import json
 import logging
 import os
-from typing import Any, Dict, Optional
+from typing import Any
 
 try:
     from anthropic import Anthropic
@@ -36,7 +35,7 @@ class ClaudeNewsClassifier(LLMNewsClassifier):
     """
 
     def __init__(
-        self, api_key: Optional[str] = None, model: str = "claude-3-haiku-20240307"
+        self, api_key: str | None = None, model: str = "claude-3-haiku-20240307"
     ):
         """
         Initialize Claude classifier.
@@ -63,7 +62,7 @@ class ClaudeNewsClassifier(LLMNewsClassifier):
                     "No API key provided for Claude. Set ANTHROPIC_API_KEY environment variable."
                 )
 
-    def _get_api_key_from_env(self) -> Optional[str]:
+    def _get_api_key_from_env(self) -> str | None:
         """Get API key from environment variables."""
         return os.getenv("ANTHROPIC_API_KEY")
 
@@ -92,7 +91,7 @@ class ClaudeNewsClassifier(LLMNewsClassifier):
 
         return True
 
-    def _classify_text(self, text: str, categories: Dict[str, Dict]) -> Dict[str, Any]:
+    def _classify_text(self, text: str, categories: dict[str, dict]) -> dict[str, Any]:
         """
         Classify a single text using Claude API.
 
@@ -191,7 +190,7 @@ class ClaudeNewsClassifier(LLMNewsClassifier):
 
 
 def create_claude_classifier(
-    api_key: Optional[str] = None, model: str = "claude-3-haiku-20240307"
+    api_key: str | None = None, model: str = "claude-3-haiku-20240307"
 ) -> ClaudeNewsClassifier:
     """
     Factory function to create a Claude news classifier.
