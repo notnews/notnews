@@ -39,8 +39,7 @@ jobs:
         
     - name: Build documentation
       run: |
-        cd docs
-        make html
+        uv run sphinx-build -b html docs/source docs/build/html
         
     - name: Setup Pages
       uses: actions/configure-pages@v4
