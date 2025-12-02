@@ -1,8 +1,8 @@
 # notnews: predict soft news using story text and the url structure
 
-[![Test](https://github.com/notnews/notnews/workflows/test/badge.svg)](https://github.com/notnews/notnews/actions?query=workflow%3Atest)
+[![CI](https://github.com/notnews/notnews/actions/workflows/ci.yml/badge.svg)](https://github.com/notnews/notnews/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/notnews.svg)](https://pypi.python.org/pypi/notnews)
-[![Documentation Status](https://readthedocs.org/projects/notnews/badge/?version=latest)](http://notnews.readthedocs.io/en/latest/?badge=latest)
+[![Build and Deploy Documentation](https://github.com/notnews/notnews/actions/workflows/docs.yml/badge.svg)](https://github.com/notnews/notnews/actions/workflows/docs.yml)
 [![Downloads](https://static.pepy.tech/badge/notnews)](https://pepy.tech/project/notnews)
 
 The package provides classifiers for soft news based on the story text and the url structure for both the US and UK news media. We provide also provide a way to infer the 'kind' of news---Arts, Books, Science, Sports, Travel, etc.---for the US news media.
