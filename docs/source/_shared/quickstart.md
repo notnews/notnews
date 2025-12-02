@@ -1,14 +1,3 @@
-# notnews: predict soft news using story text and the url structure
-
-[![CI](https://github.com/notnews/notnews/actions/workflows/ci.yml/badge.svg)](https://github.com/notnews/notnews/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/notnews.svg)](https://pypi.python.org/pypi/notnews)
-[![Build and Deploy Documentation](https://github.com/notnews/notnews/actions/workflows/docs.yml/badge.svg)](https://github.com/notnews/notnews/actions/workflows/docs.yml)
-[![Downloads](https://static.pepy.tech/badge/notnews)](https://pepy.tech/project/notnews)
-
-The package provides classifiers for soft news based on the story text and the url structure for both the US and UK news media. We provide also provide a way to infer the 'kind' of news---Arts, Books, Science, Sports, Travel, etc.---for the US news media.
-
-**Streamlit App:** https://notnews-notnews-streamlitstreamlit-app-u8j3a6.streamlit.app/
-
 ## Quick Start
 
 ```python
@@ -68,55 +57,3 @@ soft_news_url_cat(df, col='url') method of builtins.type instance
 9             nyt  http://www.nytimes.com/2016/09/06/obituaries/p...  Shes an extremely liberated woman Ms. DeCrow s...       NaN       NaN
 >>>
 ```
-
-## Installation
-
-Installation is as easy as typing in:
-
-```bash
-pip install notnews
-```
-
-For faster installation using UV:
-
-```bash
-uv add notnews
-```
-
-### Requirements
-
-- Python 3.11, 3.12, or 3.13
-- scikit-learn 1.3+ (models trained with sklearn 0.22+ are automatically compatible)
-- pandas, numpy, nltk, and other standard scientific Python packages
-
-### Compatibility
-
-This package includes automatic compatibility layers to ensure models trained with older scikit-learn versions (0.22+) work seamlessly with modern scikit-learn versions (1.3-1.5). Version warnings from scikit-learn are expected and harmless.
-
-## API
-
-For detailed API documentation including all 5 functions (soft_news_url_cat_us, pred_soft_news_us, pred_what_news_us, soft_news_url_cat_uk, pred_soft_news_uk), command line usage, and examples, please see [project documentation](http://notnews.readthedocs.io/en/latest/).
-
-## Underlying Data
-
-* For more information about how to get the underlying data for UK model, see [here](https://github.com/notnews/uk_not_news). For information about the data underlying the US model, see [here](https://github.com/notnews/us_not_news)
-
-## Applications
-
-We use the model to estimate the supply of not news in the [US](https://github.com/notnews/us_not_news) and the [UK](https://github.com/notnews/uk_not_news).
-
-## Documentation
-
-For more information, please see [project documentation](http://notnews.readthedocs.io/en/latest/).
-
-## Authors
-
-Suriyan Laohaprapanon and Gaurav Sood
-
-## Contributor Code of Conduct
-
-The project welcomes contributions from everyone! In fact, it depends on it. To maintain this welcoming atmosphere, and to collaborate in a fun and productive way, we expect contributors to the project to abide by the [Contributor Code of Conduct](http://contributor-covenant.org/version/1/0/0/)
-
-## License
-
-The package is released under the [MIT License](https://opensource.org/licenses/MIT).

@@ -10,7 +10,7 @@ notnews: predict soft news
    :maxdepth: 2
    :caption: Contents:
 
-   notnews
+   notnews.md
 
 Indices and tables
 ==================

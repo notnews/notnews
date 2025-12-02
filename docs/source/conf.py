@@ -52,6 +52,58 @@ except (FileNotFoundError, KeyError, AttributeError):
     }
 
 
+def generate_dynamic_content():
+    """Generate dynamic content files from pyproject.toml metadata."""
+    shared_dir = os.path.join(os.path.dirname(__file__), "_shared")
+    
+    # Extract Python version requirements
+    requires_python = project_metadata.get("requires-python", ">=3.11")
+    
+    # Parse Python versions from classifiers
+    python_versions = []
+    for classifier in project_metadata.get("classifiers", []):
+        if classifier.startswith("Programming Language :: Python :: 3."):
+            version = classifier.split(" :: ")[-1]
+            if version.replace(".", "").isdigit():  # e.g., "3.11", "3.12"
+                python_versions.append(version)
+    
+    if not python_versions:
+        python_versions = ["3.11", "3.12", "3.13"]  # fallback
+    
+    # Generate installation.md with dynamic content
+    installation_content = f"""## Installation
+
+Installation is as easy as typing in:
+
+```bash
+pip install {project_metadata.get('name', 'notnews')}
+```
+
+For faster installation using UV:
+
+```bash
+uv add {project_metadata.get('name', 'notnews')}
+```
+
+### Requirements
+
+- Python {', '.join(python_versions)}
+- scikit-learn 1.3+ (models trained with sklearn 0.22+ are automatically compatible)
+- pandas, numpy, nltk, and other standard scientific Python packages
+
+### Compatibility
+
+This package includes automatic compatibility layers to ensure models trained with older scikit-learn versions (0.22+) work seamlessly with modern scikit-learn versions (1.3-1.5). Version warnings from scikit-learn are expected and harmless."""
+    
+    installation_path = os.path.join(shared_dir, "installation.md")
+    with open(installation_path, "w") as f:
+        f.write(installation_content)
+
+
+# Generate dynamic content at documentation build time
+generate_dynamic_content()
+
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -76,9 +128,7 @@ templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-#
-# source_suffix = ['.rst', '.md']
-source_suffix = ".rst"
+source_suffix = ['.rst', '.md']
 
 # The master toctree document.
 master_doc = "index"
@@ -102,7 +152,7 @@ release = project_metadata["version"]
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -114,6 +164,9 @@ pygments_style = "sphinx"
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
+
+# Suppress specific warnings
+suppress_warnings = ["myst.header"]
 
 
 # -- Options for HTML output ----------------------------------------------
@@ -140,7 +193,7 @@ html_favicon = None
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["_static"]
+html_static_path = []
 
 # Type hints settings
 typehints_defaults = 'comma'
@@ -162,6 +215,9 @@ myst_enable_extensions = [
     'substitution',
     'tasklist',
 ]
+
+# MyST configuration
+myst_suppress_warnings = ["myst.header"]
 
 # Copy button configuration
 copybutton_prompt_text = r">>> |\.\.\. |\$ "
