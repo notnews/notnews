@@ -8,9 +8,24 @@ notnews: predict soft news
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Overview:
 
    notnews.md
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Getting Started:
+
+   installation
+   quickstart
+
+.. toctree::
+   :maxdepth: 2
+   :caption: API Reference:
+
+   api
+   llm_api
+   cli
 
 Indices and tables
 ==================
