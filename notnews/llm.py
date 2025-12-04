@@ -192,8 +192,7 @@ def _classify_with_claude(
             temperature=0.3,
             messages=[{"role": "user", "content": prompt}],
             system=(
-                "You are a news categorization expert. "
-                "Always respond with valid JSON."
+                "You are a news categorization expert. Always respond with valid JSON."
             ),
         )
 

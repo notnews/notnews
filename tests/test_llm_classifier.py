@@ -78,7 +78,7 @@ class TestLLMClassifier(unittest.TestCase):
         mock_claude_func.return_value = {
             "category": "hard_news",
             "confidence": 0.9,
-            "reasoning": "Political content"
+            "reasoning": "Political content",
         }
 
         # Call function
@@ -99,7 +99,7 @@ class TestLLMClassifier(unittest.TestCase):
         mock_openai_func.return_value = {
             "category": "soft_news",
             "confidence": 0.8,
-            "reasoning": "Entertainment content"
+            "reasoning": "Entertainment content",
         }
 
         # Call function
@@ -136,7 +136,7 @@ class TestLLMClassifier(unittest.TestCase):
             mock_claude.return_value = {
                 "category": "news",
                 "confidence": 0.9,
-                "reasoning": "General news content"
+                "reasoning": "General news content",
             }
 
             result = llm_classify_news(

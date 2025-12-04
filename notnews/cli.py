@@ -69,7 +69,7 @@ def classify_urls(input_file, output, url_col, region, verbose):
         click.echo(f"Loaded {len(df)} rows from {input_file}")
 
         if url_col not in df.columns:
-            available_cols = ', '.join(df.columns)
+            available_cols = ", ".join(df.columns)
             click.echo(
                 f"Error: Column '{url_col}' not found. Available: {available_cols}",
                 err=True,
@@ -112,7 +112,7 @@ def predict_ml(input_file, output, text_col, region, verbose):
         click.echo(f"Loaded {len(df)} rows from {input_file}")
 
         if text_col not in df.columns:
-            available_cols = ', '.join(df.columns)
+            available_cols = ", ".join(df.columns)
             click.echo(
                 f"Error: Column '{text_col}' not found. Available: {available_cols}",
                 err=True,
@@ -153,7 +153,7 @@ def predict_categories(input_file, output, text_col, verbose):
         click.echo(f"Loaded {len(df)} rows from {input_file}")
 
         if text_col not in df.columns:
-            available_cols = ', '.join(df.columns)
+            available_cols = ", ".join(df.columns)
             click.echo(
                 f"Error: Column '{text_col}' not found. Available: {available_cols}",
                 err=True,
@@ -199,7 +199,7 @@ def classify_llm(input_file, output, text_col, provider, model, api_key, verbose
         click.echo(f"Loaded {len(df)} rows from {input_file}")
 
         if text_col not in df.columns:
-            available_cols = ', '.join(df.columns)
+            available_cols = ", ".join(df.columns)
             click.echo(
                 f"Error: Column '{text_col}' not found. Available: {available_cols}",
                 err=True,
