@@ -27,7 +27,7 @@ class TestPredSoftNews(unittest.TestCase):
     def test_pred_what_news_us(self):
         df = pd.read_csv("tests/sample_us.csv")
         odf = pred_what_news_us(df, "text")
-        self.assertIn("pred_what_news_us", odf.columns)
+        self.assertIn("pred_category", odf.columns)
 
     def test_pred_soft_news_uk(self):
         df = pd.read_csv("tests/sample_uk.csv")

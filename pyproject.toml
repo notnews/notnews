@@ -27,11 +27,11 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Utilities"
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.14"
 dependencies = [
     "numpy>=1.22.0,<2.0.0",
     "pandas>=1.3.0",
-    "scikit-learn>=1.3.0,<1.6.0",  # Compatible with models trained on sklearn 0.22+ via compatibility layer
+    "scikit-learn>=1.6.0,<1.8.0",  # Modern version with Python 3.13 support
     "joblib",
     "tqdm",
     "nltk",

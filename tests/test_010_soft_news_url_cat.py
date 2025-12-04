@@ -22,12 +22,14 @@ class TestSoftNewsURLCat(unittest.TestCase):
     def test_soft_news_url_cat_us(self):
         df = pd.read_csv("tests/sample_us.csv")
         odf = soft_news_url_cat_us(df, "url")
-        self.assertIn("soft_lab", odf.columns)
+        self.assertIn("soft_news", odf.columns)
+        self.assertIn("hard_news", odf.columns)
 
     def test_soft_news_url_cat_uk(self):
         df = pd.read_csv("tests/sample_uk.csv")
         odf = soft_news_url_cat_uk(df, "url")
-        self.assertIn("soft_lab", odf.columns)
+        self.assertIn("soft_news", odf.columns)
+        self.assertIn("hard_news", odf.columns)
 
 
 if __name__ == "__main__":

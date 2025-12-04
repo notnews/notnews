@@ -21,14 +21,15 @@ def basic_classification_example():
     df = pd.DataFrame(
         {
             "text": [
-                "The Federal Reserve announced a quarter-point interest rate hike today, "
-                "citing persistent inflation concerns. This marks the third consecutive "
-                "rate increase this year.",
-                "Pop star Taylor Swift was spotted having dinner with NFL player Travis "
-                "Kelce at a trendy Manhattan restaurant last night. Sources say they "
-                "looked very happy together.",
-                "Opinion: The current approach to climate change is fundamentally flawed. "
-                "We need to rethink our entire strategy if we want to avoid catastrophe.",
+                "The Federal Reserve announced a quarter-point interest rate hike "
+                "today, citing persistent inflation concerns. This marks the third "
+                "consecutive rate increase this year.",
+                "Pop star Taylor Swift was spotted having dinner with NFL player "
+                "Travis Kelce at a trendy Manhattan restaurant last night. Sources "
+                "say they looked very happy together.",
+                "Opinion: The current approach to climate change is fundamentally "
+                "flawed. We need to rethink our entire strategy if we want to avoid "
+                "catastrophe.",
                 "A six-month investigation by our reporters has uncovered widespread "
                 "corruption in the state transportation department, with millions in "
                 "contracts awarded to friends and family members of officials.",
@@ -126,12 +127,15 @@ def custom_categories_example():
     df = pd.DataFrame(
         {
             "text": [
-                "Apple unveiled its latest iPhone model today with advanced AI capabilities "
-                "and a revolutionary camera system that promises professional-quality photos.",
-                "The Lakers defeated the Celtics 112-108 in overtime, with LeBron James "
-                "scoring 35 points in what many are calling one of his best performances.",
-                "Congress passed the infrastructure bill with bipartisan support, allocating "
-                "$1.2 trillion for roads, bridges, and broadband expansion.",
+                "Apple unveiled its latest iPhone model today with advanced AI "
+                "capabilities and a revolutionary camera system that promises "
+                "professional-quality photos.",
+                "The Lakers defeated the Celtics 112-108 in overtime, with LeBron "
+                "James scoring 35 points in what many are calling one of his best "
+                "performances.",
+                "Congress passed the infrastructure bill with bipartisan support, "
+                "allocating $1.2 trillion for roads, bridges, and broadband "
+                "expansion.",
                 "Netflix stock surged 15% after reporting better-than-expected subscriber "
                 "growth in the third quarter, adding 8.8 million new users globally.",
                 "The Academy Awards ceremony will feature a new host lineup this year, "
