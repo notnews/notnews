@@ -1,16 +1,45 @@
-from .llm_classifier import DEFAULT_CATEGORIES, llm_classify_news
-from .pred_soft_news_uk import pred_soft_news_uk
-from .pred_soft_news_us import pred_soft_news_us
-from .pred_what_news_us import pred_what_news_us
-from .soft_news_url_cat_uk import soft_news_url_cat_uk
-from .soft_news_url_cat_us import soft_news_url_cat_us
+#!/usr/bin/env python
+
+"""
+notnews: News classification library.
+
+A simple, unified library for classifying news articles as hard/soft news
+using URL patterns, machine learning models, and Large Language Models.
+"""
+
+# Main classification functions - new unified API
+from .classifiers import (
+    classify_by_url,
+    predict_soft_news, 
+    predict_news_category,
+    # Legacy functions for backward compatibility
+    soft_news_url_cat_us,
+    soft_news_url_cat_uk,
+    pred_soft_news_us,
+    pred_soft_news_uk,
+    pred_what_news_us,
+)
+from .llm import classify_news as classify_with_llm, DEFAULT_CATEGORIES
+from .utils import clean_text, fetch_web_content
+
+__version__ = "0.3.0"
 
 __all__ = [
-    "soft_news_url_cat_us",
-    "pred_soft_news_us",
-    "pred_what_news_us",
-    "soft_news_url_cat_uk",
-    "pred_soft_news_uk",
-    "llm_classify_news",
+    # Modern unified API
+    "classify_by_url",
+    "predict_soft_news",
+    "predict_news_category", 
+    "classify_with_llm",
     "DEFAULT_CATEGORIES",
+    
+    # Utility functions
+    "clean_text",
+    "fetch_web_content",
+    
+    # Legacy functions (deprecated)
+    "soft_news_url_cat_us",
+    "soft_news_url_cat_uk", 
+    "pred_soft_news_us",
+    "pred_soft_news_uk",
+    "pred_what_news_us",
 ]

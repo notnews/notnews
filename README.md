@@ -1,88 +1,94 @@
-# notnews: predict soft news using story text and the url structure
+# notnews: Modern News Classification Library
 
 [![CI](https://github.com/notnews/notnews/actions/workflows/ci.yml/badge.svg)](https://github.com/notnews/notnews/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/notnews.svg)](https://pypi.python.org/pypi/notnews)
 [![Build and Deploy Documentation](https://github.com/notnews/notnews/actions/workflows/docs.yml/badge.svg)](https://github.com/notnews/notnews/actions/workflows/docs.yml)
 [![Downloads](https://static.pepy.tech/badge/notnews)](https://pepy.tech/project/notnews)
 
-The package provides classifiers for soft news based on story text and URL structure for both US and UK news media. We also provide ways to infer the 'kind' of news---Arts, Books, Science, Sports, Travel, etc.---for US news media.
+A fast, modern Python library for classifying news articles as hard news vs. soft news using multiple approaches: URL patterns, machine learning models, and Large Language Models.
 
-**Modern Features:**
-- **Traditional ML classifiers** - Fast, offline classification using trained models
-- **LLM-based classification** - Flexible classification using Claude and OpenAI with custom categories
-- **Web content fetching** - Automatically fetch and classify content from URLs
+## Features
 
-**Streamlit App:** https://notnews-notnews-streamlitstreamlit-app-u8j3a6.streamlit.app/
+🚀 **Three Classification Methods:**
+- **URL Pattern Analysis** - Lightning-fast classification using URL structure
+- **ML Models** - Trained scikit-learn models for US/UK news prediction  
+- **LLM Classification** - Flexible categorization using Claude or OpenAI
+
+🌍 **Multi-Region Support:**
+- US and UK news patterns and models
+- Easily extensible to other regions
+
+⚡ **Modern Architecture:**
+- Unified API with consistent interface
+- Click-based CLI for command-line usage
+- Built with uv_build for 10-35x faster builds
+- Type hints and comprehensive error handling
+
+**Streamlit Demo:** https://notnews-notnews-streamlitstreamlit-app-u8j3a6.streamlit.app/
 
 ## Quick Start
 
+### Python API
+
 ```python
->>> import pandas as pd
->>> from notnews import *
+import pandas as pd
+import notnews
 
->>> # Get help
->>> help(soft_news_url_cat_us)
+# Load your data
+df = pd.read_csv("news_articles.csv")
 
-Help on method soft_news_url_cat in module notnews.soft_news_url_cat:
+# Method 1: URL Pattern Classification (fastest)
+df_url = notnews.classify_by_url(df, url_col="url", region="us")
+print(df_url[["url", "hard_news", "soft_news"]].head())
 
-soft_news_url_cat(df, col='url') method of builtins.type instance
-    Soft News Categorize by URL pattern.
+# Method 2: ML Model Prediction (most accurate)
+df_ml = notnews.predict_soft_news(df, text_col="text", region="us")
+print(df_ml[["text", "prob_soft_news_us"]].head())
 
-    Using the URL pattern to categorize the soft/hard news of the input
-    DataFrame.
+# Method 3: LLM Classification (most flexible)
+# Requires ANTHROPIC_API_KEY or OPENAI_API_KEY environment variable
+df_llm = notnews.classify_with_llm(df, text_col="text", provider="claude")
+print(df_llm[["text", "llm_category", "llm_confidence"]].head())
 
-    Args:
-        df (:obj:`DataFrame`): Pandas DataFrame containing the URL
-            column.
-        col (str or int): Column's name or location of the URL in
-            DataFrame (default: url).
+# Detailed Categories (US only)
+df_categories = notnews.predict_news_category(df, text_col="text")
+print(df_categories[["text", "pred_category", "prob_soft_news"]].head())
+```
 
-    Returns:
-        DataFrame: Pandas DataFrame with additional columns:
-            - `soft_lab` set to 1 if URL match with soft news URL pattern.
-            - `hard_lab` set to 1 if URL match with hard news URL pattern.
+### Command Line Interface
 
->>> # Load data
->>> df = pd.read_csv('./tests/sample_us.csv')
->>> df
-            src                                                url                                               text
-0             nyt  http://www.nytimes.com/2017/02/11/us/politics/...  Mr. Kushner on something of a crash course in ...
-1  huffingtonpost  http://grvrdr.huffingtonpost.com/302/redirect?...  Authorities are still searching for a man susp...
-2             nyt  http://www.nytimes.com/2016/09/19/us/politics/...  Photo  WASHINGTON — In releasing a far more so...
-3          google  http://www.foxnews.com/world/2016/07/17/turkey...  The Turkish government on Sunday ratcheted up ...
-4             nyt  http://www.nytimes.com/interactive/2016/08/29/...  NYTimes.com no longer supports Internet Explor...
-5           yahoo  https://www.yahoo.com/news/pittsburgh-symphony...  PITTSBURGH AP — Pittsburgh Symphony Orchestra ...
-6         foxnews  http://www.foxnews.com/politics/2016/08/13/cli...  Hillary Clintons campaign is questioning a rep...
-7         foxnews  http://www.foxnews.com/us/2017/04/15/april-gir...  April the giraffe has given birth at a New Yor...
-8         foxnews  http://www.foxnews.com/politics/2017/05/03/hil...  Want FOX News Halftime Report in your inbox ev...
-9             nyt  http://www.nytimes.com/2016/09/06/obituaries/p...  Shes an extremely liberated woman Ms. DeCrow s...
->>>
->>> # Get the Soft News URL category
->>> df_soft_news_url_cat_us  = soft_news_url_cat_us(df, col='url')
->>> df_soft_news_url_cat_us
-            src                                                url                                               text  soft_lab  hard_lab
-0             nyt  http://www.nytimes.com/2017/02/11/us/politics/...  Mr. Kushner on something of a crash course in ...       NaN       1.0
-1  huffingtonpost  http://grvrdr.huffingtonpost.com/302/redirect?...  Authorities are still searching for a man susp...       NaN       NaN
-2             nyt  http://www.nytimes.com/2016/09/19/us/politics/...  Photo  WASHINGTON — In releasing a far more so...       NaN       1.0
-3          google  http://www.foxnews.com/world/2016/07/17/turkey...  The Turkish government on Sunday ratcheted up ...       NaN       1.0
-4             nyt  http://www.nytimes.com/interactive/2016/08/29/...  NYTimes.com no longer supports Internet Explor...       NaN       1.0
-5           yahoo  https://www.yahoo.com/news/pittsburgh-symphony...  PITTSBURGH AP — Pittsburgh Symphony Orchestra ...       1.0       NaN
-6         foxnews  http://www.foxnews.com/politics/2016/08/13/cli...  Hillary Clintons campaign is questioning a rep...       NaN       1.0
-7         foxnews  http://www.foxnews.com/us/2017/04/15/april-gir...  April the giraffe has given birth at a New Yor...       NaN       NaN
-8         foxnews  http://www.foxnews.com/politics/2017/05/03/hil...  Want FOX News Halftime Report in your inbox ev...       NaN       1.0
-9             nyt  http://www.nytimes.com/2016/09/06/obituaries/p...  Shes an extremely liberated woman Ms. DeCrow s...       NaN       NaN
->>>
+```bash
+# Install the package
+pip install notnews
+# or with uv
+uv add notnews
+
+# URL pattern classification
+notnews classify-urls articles.csv --region us --output results.csv
+
+# ML model prediction  
+notnews predict-ml articles.csv --region uk --text-col content
+
+# LLM classification
+notnews classify-llm articles.csv --provider claude --api-key your_key
+
+# Run all methods together
+notnews classify-all articles.csv --region us
+
+# Get help
+notnews --help
+notnews classify-urls --help
 ```
 
 ## Installation
 
-Installation is as easy as typing in:
+### Standard Installation
 
 ```bash
 pip install notnews
 ```
 
-For faster installation using UV:
+### Fast Installation with UV
 
 ```bash
 uv add notnews
@@ -90,38 +96,132 @@ uv add notnews
 
 ### Requirements
 
-- Python 3.11, 3.12, or 3.13
-- scikit-learn 1.3+ (models trained with sklearn 0.22+ are automatically compatible)
-- pandas, numpy, nltk, and other standard scientific Python packages
+- **Python:** 3.11, 3.12, or 3.13
+- **Core:** pandas, numpy, scikit-learn 1.3+, nltk
+- **Web:** requests, beautifulsoup4
+- **CLI:** click 8.0+
+- **Optional:** anthropic, openai (for LLM classification)
 
-### Compatibility
+### LLM Setup
 
-This package includes automatic compatibility layers to ensure models trained with older scikit-learn versions (0.22+) work seamlessly with modern scikit-learn versions (1.3-1.5). Version warnings from scikit-learn are expected and harmless.
+For LLM classification, set your API key:
 
-## API
+```bash
+# For Claude
+export ANTHROPIC_API_KEY="your_key_here"
 
-For detailed API documentation including all 6 functions (soft_news_url_cat_us, pred_soft_news_us, pred_what_news_us, soft_news_url_cat_uk, pred_soft_news_uk, llm_classify_news), command line usage, and examples, please see [project documentation](http://notnews.readthedocs.io/en/latest/).
+# For OpenAI  
+export OPENAI_API_KEY="your_key_here"
+```
 
-## Underlying Data
+## API Reference
 
-* For more information about how to get the underlying data for UK model, see [here](https://github.com/notnews/uk_not_news). For information about the data underlying the US model, see [here](https://github.com/notnews/us_not_news)
+### Core Functions
+
+#### `classify_by_url(df, url_col="url", region="us")`
+
+Classify articles using URL pattern matching.
+
+**Args:**
+- `df`: DataFrame with articles
+- `url_col`: Column containing URLs
+- `region`: "us" or "uk" for region-specific patterns
+
+**Returns:** DataFrame with `hard_news` and `soft_news` columns
+
+#### `predict_soft_news(df, text_col="text", region="us")`
+
+Predict soft news probability using trained ML models.
+
+**Args:**
+- `df`: DataFrame with articles  
+- `text_col`: Column containing article text
+- `region`: "us" or "uk" for model selection
+
+**Returns:** DataFrame with `prob_soft_news_{region}` column
+
+#### `classify_with_llm(df, text_col="text", provider="claude", **kwargs)`
+
+Classify articles using Large Language Models.
+
+**Args:**
+- `df`: DataFrame with articles
+- `text_col`: Column containing article text  
+- `provider`: "claude" or "openai"
+- `categories`: Optional custom categories dict
+- `api_key`: Optional API key (uses env var if not provided)
+
+**Returns:** DataFrame with `llm_category`, `llm_confidence`, `llm_reasoning` columns
+
+### Advanced Usage
+
+```python
+# Custom LLM categories
+custom_categories = {
+    "breaking": {"description": "Breaking news and urgent updates"},
+    "analysis": {"description": "In-depth analysis and commentary"},
+    "lifestyle": {"description": "Lifestyle and entertainment content"}
+}
+
+df_custom = notnews.classify_with_llm(
+    df, 
+    provider="claude",
+    categories=custom_categories
+)
+
+# Fetch content from URLs
+content = notnews.fetch_web_content("https://example.com/article")
+```
+
+## Model Information
+
+### URL Patterns
+- **US:** Politics, economics, international affairs vs. sports, entertainment, lifestyle
+- **UK:** Includes UK-specific patterns like "uk-news", "scottish-news"
+
+### ML Models
+- **US:** NYT-based models trained on headline and content text
+- **UK:** URL-based model trained on UK news outlets
+- Compatible with scikit-learn 1.3-1.5 (models trained on 0.22+)
+
+### Performance
+- **URL Classification:** ~1000 articles/second
+- **ML Prediction:** ~100 articles/second  
+- **LLM Classification:** ~1-10 articles/second (API dependent)
+
+## Data Sources
+
+- **US Model:** Based on [NYT data](https://github.com/notnews/us_not_news)
+- **UK Model:** Based on [UK news analysis](https://github.com/notnews/uk_not_news)
 
 ## Applications
 
-We use the model to estimate the supply of not news in the [US](https://github.com/notnews/us_not_news) and the [UK](https://github.com/notnews/uk_not_news).
+Research using notnews:
+- [US Soft News Analysis](https://github.com/notnews/us_not_news)
+- [UK Soft News Analysis](https://github.com/notnews/uk_not_news)
 
 ## Documentation
 
-For more information, please see [project documentation](http://notnews.readthedocs.io/en/latest/).
+Full documentation: [notnews.readthedocs.io](http://notnews.readthedocs.io/en/latest/)
+
+## Contributing
+
+We welcome contributions! Please see our [Contributor Code of Conduct](http://contributor-covenant.org/version/1/0/0/).
+
+### Development Setup
+
+```bash
+git clone https://github.com/notnews/notnews.git
+cd notnews
+uv sync --dev
+uv run pytest
+```
 
 ## Authors
 
-Suriyan Laohaprapanon and Gaurav Sood
-
-## Contributor Code of Conduct
-
-The project welcomes contributions from everyone! In fact, it depends on it. To maintain this welcoming atmosphere, and to collaborate in a fun and productive way, we expect contributors to the project to abide by the [Contributor Code of Conduct](http://contributor-covenant.org/version/1/0/0/)
+- Suriyan Laohaprapanon
+- Gaurav Sood
 
 ## License
 
-The package is released under the [MIT License](https://opensource.org/licenses/MIT).
+[MIT License](https://opensource.org/licenses/MIT)

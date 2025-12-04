@@ -35,7 +35,7 @@ jobs:
       
     - name: Install dependencies
       run: |
-        uv pip install --system -e ".[docs]"
+        uv sync --locked --extra docs
         
     - name: Build documentation
       run: |
