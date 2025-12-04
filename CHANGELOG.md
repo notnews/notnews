@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - pandas: Modern version support
 - **Build System**: Migrated to uv_build for 10-35x faster builds
 - **Error Handling**: Enhanced exception handling with specific error types
-- **Model Architecture**: CalibratedClassifierCV for better probability estimates
+- **Model Loading**: Fixed compatibility issues with modern scikit-learn
 
 ### 🧹 Removed
 - **Legacy API Functions**: Old scattered functions consolidated (backward compatibility maintained)
@@ -57,14 +57,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CI/CD**: Enhanced GitHub Actions with UV for faster builds
 
 ### 📈 Performance Gains
-- **Model Loading**: 40-60% faster model initialization
 - **Build Times**: 10-35x faster package builds with UV
-- **CI/CD**: 3x faster dependency installation
-- **Memory Usage**: Reduced memory footprint for model operations
+- **CI/CD**: 3x faster dependency installation  
+- **Compatibility**: Models now work seamlessly with Python 3.13
 
 ### 🎯 Migration Guide
 - **No code changes required**: Existing API calls continue to work
-- **Performance boost**: Automatic benefit from modernized models
+- **Performance boost**: Automatic benefit from modern dependencies
 - **New features**: Optional use of enhanced CLI and unified API
 - **Python upgrade**: Recommend upgrading to Python 3.11+ for best performance
 
