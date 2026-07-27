@@ -46,7 +46,7 @@ jobs:
       if: github.ref == 'refs/heads/master'
       
     - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
+      uses: actions/upload-pages-artifact@v5
       if: github.ref == 'refs/heads/master'
       with:
         path: docs/build/html
