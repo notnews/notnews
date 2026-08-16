@@ -16,6 +16,8 @@ from urllib.parse import urlparse
 import requests
 from bs4 import BeautifulSoup
 from bs4.element import Tag
+from pandas import isna
+from pandas.api.types import is_scalar
 
 logger = logging.getLogger(__name__)
 
@@ -35,13 +37,14 @@ DEFAULT_HEADERS = {
 
 
 # Text processing functions
-def clean_text(text: str) -> str:
+def clean_text(text: object) -> str:
     """Clean and normalize text for machine learning processing.
 
     Performs deterministic tokenization and normalization.
 
     Args:
-        text: Input text to clean and normalize.
+        text: Scalar input to clean and normalize. Missing values produce an
+            empty string.
 
     Returns:
         Normalized, whitespace-separated text.
@@ -52,7 +55,10 @@ def clean_text(text: str) -> str:
         >>> print(clean)
         the politician announced new policies today
     """
-    normalized = re.sub(r"\d+", "", str(text or "").lower())
+    if is_scalar(text) and bool(isna(text)):
+        return ""
+
+    normalized = re.sub(r"\d+", "", str(text).lower())
     tokens = normalized.translate(_PUNCTUATION_TABLE).split()
     return " ".join(tokens)
 
