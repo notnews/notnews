@@ -10,6 +10,7 @@ for both US and UK regions with a unified interface.
 import logging
 import re
 
+import numpy as np
 import pandas as pd
 
 from ._portable_model import PortableTextClassifier, load_model
@@ -217,8 +218,9 @@ def predict_news_category(df: pd.DataFrame, text_col: str = "text") -> pd.DataFr
     text_data = result_df.loc[valid_rows, text_col].astype(str)
 
     try:
-        y_pred = model.predict(text_data)
         y_prob = model.predict_proba(text_data)
+        labels = np.asarray(model.classes, dtype=str)
+        y_pred = labels[np.argmax(y_prob, axis=1)]
 
         # Add predictions
         valid_index = result_df.index[valid_rows]

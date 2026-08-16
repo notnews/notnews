@@ -29,6 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Return typed output columns for empty URL-classification inputs.
 - Leave missing text rows unclassified instead of predicting from empty text.
 - Feed model vectorizers the raw text used by their training pipelines.
+- Bound dense feature allocation during portable inference and reuse category
+  probabilities for label selection.
 
 ### Removed
 

@@ -45,10 +45,10 @@ def test_predict_news_category_preserves_nondefault_index() -> None:
     classes = ["Hard", *classifiers.SOFT_NEWS_CATEGORIES]
     probabilities = np.zeros((2, len(classes)))
     probabilities[0, classes.index("Arts")] = 0.75
+    probabilities[1, classes.index("Hard")] = 0.75
     probabilities[1, classes.index("Books")] = 0.25
     model = SimpleNamespace(
         classes=classes,
-        predict=Mock(return_value=np.array(["Arts", "Hard"])),
         predict_proba=Mock(return_value=probabilities),
     )
     source = pd.DataFrame({"text": ["arts", None, "politics"]}, index=[101, 44, 205])
@@ -63,6 +63,7 @@ def test_predict_news_category_preserves_nondefault_index() -> None:
     assert pd.isna(result.loc[44, "prob_soft_news"])
     assert result.loc[205, "pred_category"] == "Hard"
     assert result.loc[205, "prob_soft_news"] == pytest.approx(0.25)
+    model.predict_proba.assert_called_once()
 
 
 def test_load_model_maps_region_to_portable_model() -> None:

@@ -6,6 +6,7 @@ import re
 from collections.abc import Iterable
 from dataclasses import dataclass
 from functools import cache
+from itertools import islice
 from typing import Any
 
 import numpy as np
@@ -13,6 +14,8 @@ import pyarrow.parquet as pq
 
 from ._resources import ASSET_FILES, resolve_asset
 from ._schemas import ASSET_SCHEMAS
+
+_INFERENCE_BATCH_SIZE = 4096
 
 
 @dataclass(frozen=True)
@@ -53,7 +56,17 @@ class PortableTextClassifier:
 
     def predict_proba(self, documents: Iterable[str]) -> np.ndarray:
         """Return calibrated class probabilities for each document."""
-        features = self.transform(documents)
+        iterator = iter(documents)
+        batches = []
+        while values := list(islice(iterator, _INFERENCE_BATCH_SIZE)):
+            batches.append(self._predict_feature_batch(self.transform(values)))
+
+        if not batches:
+            return np.empty((0, len(self.classes)), dtype=np.float64)
+        return np.concatenate(batches)
+
+    def _predict_feature_batch(self, features: np.ndarray) -> np.ndarray:
+        """Score one bounded feature batch."""
         mean_probability = np.zeros(
             (features.shape[0], len(self.classes)), dtype=np.float64
         )

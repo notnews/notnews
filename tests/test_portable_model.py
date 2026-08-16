@@ -53,6 +53,40 @@ def test_multiclass_zero_calibration_uses_uniform_distribution() -> None:
     ]
 
 
+def test_inference_vectorizes_in_bounded_batches(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Prediction does not allocate one corpus-sized dense feature matrix."""
+    estimator = _Estimator(
+        coefficients=np.array([[1.0]]),
+        intercepts=np.array([0.0]),
+        x_thresholds=(np.array([-1.0, 1.0]),),
+        y_thresholds=(np.array([0.0, 1.0]),),
+    )
+    model = PortableTextClassifier(
+        vocabulary={"news": 0},
+        ngram_range=(1, 1),
+        classes=("0", "1"),
+        estimators=(estimator,),
+    )
+    batch_sizes = []
+    original_transform = PortableTextClassifier.transform
+
+    def tracked_transform(
+        classifier: PortableTextClassifier, documents: list[str]
+    ) -> np.ndarray:
+        batch_sizes.append(len(documents))
+        return original_transform(classifier, documents)
+
+    monkeypatch.setattr(_portable_model, "_INFERENCE_BATCH_SIZE", 2)
+    monkeypatch.setattr(PortableTextClassifier, "transform", tracked_transform)
+
+    probabilities = model.predict_proba("news" for _ in range(5))
+
+    assert probabilities.shape == (5, 2)
+    assert batch_sizes == [2, 2, 1]
+
+
 def _write_asset(path: Path, rows: list[dict[str, object]]) -> None:
     """Write a test asset using the production schema."""
     pq.write_table(pa.Table.from_pylist(rows, schema=ASSET_SCHEMAS[path.name]), path)
