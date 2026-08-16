@@ -109,9 +109,12 @@ def classify_by_url(
 
         return (1 if hard_match else None), (1 if soft_match else None)
 
-    # Apply classification
-    result_df[["hard_news", "soft_news"]] = result_df[url_col].apply(
-        lambda x: pd.Series(classify_url(x))
+    classified = [classify_url(url) for url in result_df[url_col]]
+    result_df["hard_news"] = pd.array(
+        [hard_news for hard_news, _ in classified], dtype="Int64"
+    )
+    result_df["soft_news"] = pd.array(
+        [soft_news for _, soft_news in classified], dtype="Int64"
     )
 
     return result_df

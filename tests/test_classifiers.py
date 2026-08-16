@@ -79,3 +79,15 @@ def test_load_model_rejects_unknown_region() -> None:
     """Unsupported regions fail before any artifact lookup."""
     with pytest.raises(ValueError, match="Unsupported region"):
         classifiers._load_model("ca")
+
+
+def test_classify_by_url_accepts_empty_dataframe() -> None:
+    """Empty inputs retain their index and receive typed output columns."""
+    source = pd.DataFrame({"url": pd.Series(dtype="string")})
+
+    result = classifiers.classify_by_url(source)
+
+    assert result.empty
+    assert list(result.columns) == ["url", "hard_news", "soft_news"]
+    assert str(result["hard_news"].dtype) == "Int64"
+    assert str(result["soft_news"].dtype) == "Int64"

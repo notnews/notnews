@@ -165,6 +165,25 @@ class TestLLMClassifier(unittest.TestCase):
             self.assertIsInstance(result, pd.DataFrame)
             mock_claude.assert_called()
 
+    @patch("notnews.llm._classify_with_claude")
+    def test_duplicate_indices_are_classified_independently(self, mock_claude):
+        """Duplicate labels do not mix the corresponding rows."""
+        mock_claude.side_effect = [
+            {"category": "hard_news", "confidence": 0.9, "reasoning": "First"},
+            {"category": "soft_news", "confidence": 0.8, "reasoning": "Second"},
+        ]
+        source = pd.DataFrame(
+            {"text": ["Election result", "Celebrity wedding"]}, index=[4, 4]
+        )
+
+        result = classify_with_llm(source, provider="claude", api_key="test-key")
+
+        self.assertEqual(result["llm_category"].tolist(), ["hard_news", "soft_news"])
+        self.assertEqual(
+            [call.args[0] for call in mock_claude.call_args_list],
+            ["Election result", "Celebrity wedding"],
+        )
+
 
 class TestLLMUtils(unittest.TestCase):
     """Test cases for LLM utility functions."""

@@ -344,20 +344,28 @@ def classify_with_llm(
 
     logger.info(f"Classifying {total_rows} articles using {provider} ({model})...")
 
-    for i, idx in enumerate(result_df[valid_rows].index, 1):
-        text = result_df.at[idx, text_col]
+    valid_positions = [
+        position for position, is_valid in enumerate(valid_rows) if is_valid
+    ]
+    text_position = result_df.columns.get_loc(text_col)
+    category_position = result_df.columns.get_loc("llm_category")
+    confidence_position = result_df.columns.get_loc("llm_confidence")
+    reasoning_position = result_df.columns.get_loc("llm_reasoning")
+
+    for i, position in enumerate(valid_positions, 1):
+        text = result_df.iat[position, text_position]
 
         try:
             result = classify_func(str(text), categories, api_key, model)
-            result_df.at[idx, "llm_category"] = result["category"]
-            result_df.at[idx, "llm_confidence"] = result["confidence"]
-            result_df.at[idx, "llm_reasoning"] = result["reasoning"]
+            result_df.iat[position, category_position] = result["category"]
+            result_df.iat[position, confidence_position] = result["confidence"]
+            result_df.iat[position, reasoning_position] = result["reasoning"]
 
             if i % 10 == 0:
                 logger.info(f"Processed {i}/{total_rows} articles")
 
         except Exception as e:
-            logger.error(f"Error classifying row {idx}: {e}")
+            logger.error(f"Error classifying row {result_df.index[position]}: {e}")
             continue
 
     classified_count = result_df["llm_category"].notnull().sum()

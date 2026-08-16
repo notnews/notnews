@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Preserve non-default DataFrame indices when assigning category probabilities.
+- Classify duplicate-index LLM inputs row by row instead of mixing their results.
+- Return typed output columns for empty URL-classification inputs.
 - Leave missing text rows unclassified instead of predicting from empty text.
 - Feed model vectorizers the raw text used by their training pipelines.
 

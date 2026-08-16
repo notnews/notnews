@@ -89,6 +89,16 @@ style = "pep440"
 [tool.hatch.build.targets.wheel]
 packages = ["notnews"]
 
+[tool.hatch.build.targets.sdist]
+include = [
+    "/CHANGELOG.md",
+    "/CITATION.cff",
+    "/LICENSE",
+    "/README.md",
+    "/notnews",
+    "/pyproject.toml",
+]
+
 [tool.hatch.build]
 exclude = [
     "/.github",
