@@ -117,7 +117,7 @@ def fetch_web_content(url: str, timeout: int = 10) -> str | None:
 
     Example:
         >>> import notnews
-        >>> content = notnews.fetch_web_content("https://example.com/article")
+        >>> content = notnews.fetch_web_content("https://example.com")
         >>> if content:
         ...     print(f"Extracted {len(content)} characters")
     """
@@ -305,30 +305,3 @@ def extract_article_metadata(
         logger.error(f"Error extracting metadata from {url}: {e}")
 
     return metadata
-
-
-# Legacy utility functions for compatibility
-def find_ngrams(vocab: list, text: str, n: int) -> list[int]:
-    """
-    Find and return list of the index of n-grams in the vocabulary list.
-
-    Args:
-        vocab: Vocabulary list
-        text: Input text
-        n: N-grams size
-
-    Returns:
-        List of indices of n-grams in vocabulary
-    """
-    wi = []
-
-    ngram_iter = zip(*[text[i:] for i in range(n)], strict=False)
-    for ngram in ngram_iter:
-        word = "".join(ngram)
-        try:
-            idx = vocab.index(word)
-        except (ValueError, IndexError):
-            idx = 0
-        wi.append(idx)
-
-    return wi

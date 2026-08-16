@@ -58,6 +58,10 @@ dev = [
     "pyright>=1.1.390",
     "pre-commit>=3.0",
 ]
+model-training = [
+    "joblib>=1.5",
+    "scikit-learn==1.7.2",
+]
 test = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
