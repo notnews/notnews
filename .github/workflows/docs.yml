@@ -35,7 +35,7 @@ jobs:
       
     - name: Install dependencies
       run: |
-        uv sync --locked --extra docs
+        uv sync --locked --group docs
         
     - name: Build documentation
       run: |

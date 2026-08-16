@@ -10,14 +10,10 @@ for both US and UK regions with a unified interface.
 import logging
 import re
 import sys
+from importlib.resources import files
 
 import joblib
 import pandas as pd
-
-try:
-    from importlib.resources import files
-except ImportError:
-    from importlib_resources import files
 
 from .utils import clean_text
 
