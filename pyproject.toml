@@ -63,9 +63,11 @@ model-training = [
     "scikit-learn==1.7.2",
 ]
 test = [
+    "joblib>=1.5",
     "pytest>=7.0",
     "pytest-cov>=4.0",
     "pytest-xdist>=3.0",
+    "scikit-learn==1.7.2",
 ]
 
 [project.urls]

@@ -11,7 +11,7 @@ import os
 
 import pandas as pd
 
-from notnews import llm_classify_news
+from notnews import classify_with_llm
 
 
 def basic_classification_example():
@@ -45,13 +45,13 @@ def basic_classification_example():
     # Classify using Claude (requires ANTHROPIC_API_KEY environment variable)
     if os.getenv("ANTHROPIC_API_KEY"):
         print("Classifying with Claude...")
-        result_claude = llm_classify_news(df, col="text", provider="claude")
+        result_claude = classify_with_llm(df, text_col="text", provider="claude")
 
         print("\nClaude Classification Results:")
-        print(result_claude[["source", "llm_category_claude", "llm_confidence_claude"]])
+        print(result_claude[["source", "llm_category", "llm_confidence"]])
         print("\nReasoning:")
         for idx, row in result_claude.iterrows():
-            print(f"{idx + 1}. {row['source']}: {row['llm_reasoning_claude']}")
+            print(f"{idx + 1}. {row['source']}: {row['llm_reasoning']}")
     else:
         print("Skipping Claude (ANTHROPIC_API_KEY not set)")
 
@@ -60,13 +60,13 @@ def basic_classification_example():
     # Classify using OpenAI (requires OPENAI_API_KEY environment variable)
     if os.getenv("OPENAI_API_KEY"):
         print("Classifying with OpenAI...")
-        result_openai = llm_classify_news(df, col="text", provider="openai")
+        result_openai = classify_with_llm(df, text_col="text", provider="openai")
 
         print("\nOpenAI Classification Results:")
-        print(result_openai[["source", "llm_category_openai", "llm_confidence_openai"]])
+        print(result_openai[["source", "llm_category", "llm_confidence"]])
         print("\nReasoning:")
         for idx, row in result_openai.iterrows():
-            print(f"{idx + 1}. {row['source']}: {row['llm_reasoning_openai']}")
+            print(f"{idx + 1}. {row['source']}: {row['llm_reasoning']}")
     else:
         print("Skipping OpenAI (OPENAI_API_KEY not set)")
 
@@ -150,18 +150,18 @@ def custom_categories_example():
 
     # Classify with custom categories
     if os.getenv("ANTHROPIC_API_KEY"):
-        result = llm_classify_news(
-            df, col="text", provider="claude", categories=custom_categories
+        result = classify_with_llm(
+            df, text_col="text", provider="claude", categories=custom_categories
         )
 
         print("Classification Results with Custom Categories:")
         for idx, row in result.iterrows():
             print(
-                f"\n{idx + 1}. Category: {row['llm_category_claude']} "
-                f"(Confidence: {row['llm_confidence_claude']:.2f})"
+                f"\n{idx + 1}. Category: {row['llm_category']} "
+                f"(Confidence: {row['llm_confidence']:.2f})"
             )
             print(f"   Text: {row['text'][:100]}...")
-            print(f"   Reasoning: {row['llm_reasoning_claude']}")
+            print(f"   Reasoning: {row['llm_reasoning']}")
     else:
         print("Set ANTHROPIC_API_KEY to run this example")
 
@@ -190,16 +190,10 @@ def web_content_fetching_example():
     if os.getenv("ANTHROPIC_API_KEY"):
         # Classify with web content fetching enabled
         # Note: In real usage, provide actual URLs that can be fetched
-        result = llm_classify_news(
-            df,
-            col="text",
-            provider="claude",
-            fetch_content=True,  # Enable web content fetching
-            url_col="url",  # Specify column with URLs
-        )
+        result = classify_with_llm(df, text_col="text", provider="claude")
 
         print("Results with Web Content Fetching:")
-        print(result[["text", "llm_category_claude", "llm_fetched_content"]])
+        print(result[["text", "llm_category", "llm_confidence"]])
     else:
         print("Set ANTHROPIC_API_KEY to run this example")
 
@@ -238,10 +232,10 @@ def batch_processing_example():
 
     if os.getenv("ANTHROPIC_API_KEY"):
         # Process in batch
-        result = llm_classify_news(df, col="text", provider="claude")
+        result = classify_with_llm(df, text_col="text", provider="claude")
 
         # Show summary statistics
-        category_counts = result["llm_category_claude"].value_counts()
+        category_counts = result["llm_category"].value_counts()
         print("Category Distribution:")
         for cat, count in category_counts.items():
             percentage = (count / len(df)) * 100
@@ -250,9 +244,7 @@ def batch_processing_example():
         # Show average confidence by category
         print("\nAverage Confidence by Category:")
         for cat in category_counts.index:
-            avg_conf = result[result["llm_category_claude"] == cat][
-                "llm_confidence_claude"
-            ].mean()
+            avg_conf = result[result["llm_category"] == cat]["llm_confidence"].mean()
             print(f"  {cat}: {avg_conf:.3f}")
     else:
         print("Set ANTHROPIC_API_KEY to run this example")

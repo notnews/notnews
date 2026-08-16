@@ -209,7 +209,7 @@ We welcome contributions! Please see our [Contributor Code of Conduct](http://co
 ```bash
 git clone https://github.com/notnews/notnews.git
 cd notnews
-uv sync --all-groups
+uv sync --all-groups --all-extras
 uv run pytest
 ```
 
