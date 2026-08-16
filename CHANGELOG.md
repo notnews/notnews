@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Immutable Hugging Face distribution for the six trained model artifacts.
+- Offline tests for artifact resolution, missing inputs, and index alignment.
+
+### Changed
+
+- Export model vocabularies, coefficients, and calibration curves as typed
+  Parquet rather than loading version-bound scikit-learn pickles.
+- Use the py-canon Sphinx configuration and reusable CI, docs, and release
+  workflows.
+- Build documentation directly from the README and public docstrings.
+
+### Fixed
+
+- Preserve non-default DataFrame indices when assigning category probabilities.
+- Leave missing text rows unclassified instead of predicting from empty text.
+- Feed model vectorizers the raw text used by their training pipelines.
+
+### Removed
+
+- Packaged joblib artifacts; runtime model tables now resolve from the pinned
+  Hub revision.
+- The joblib, scikit-learn, and NLTK runtime dependencies.
+- Duplicated generated documentation and the legacy publish workflow.
+
 ## [0.3.0] - 2025-12-04
 
 **🚀 Major Release: Complete Modernization and ML Model Overhaul**

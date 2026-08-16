@@ -198,7 +198,10 @@ def _classify_with_claude(
             ),
         )
 
-        response_text = response.content[0].text
+        first_block = response.content[0]
+        if first_block.type != "text":
+            raise RuntimeError("Claude returned no text content")
+        response_text = first_block.text
         return _parse_llm_response(response_text, categories)
 
     except Exception as e:
@@ -225,9 +228,9 @@ def _classify_with_openai(
     prompt = DEFAULT_PROMPT_TEMPLATE.format(categories=categories_str, content=text)
 
     try:
-        response = client.chat.completions.create(
-            model=model,
-            messages=[
+        request: dict[str, Any] = {
+            "model": model,
+            "messages": [
                 {
                     "role": "system",
                     "content": (
@@ -237,14 +240,16 @@ def _classify_with_openai(
                 },
                 {"role": "user", "content": prompt},
             ],
-            temperature=0.3,
-            max_tokens=500,
-            response_format={"type": "json_object"}
-            if "gpt-4" in model or "3.5-turbo-1106" in model
-            else None,
-        )
+            "temperature": 0.3,
+            "max_tokens": 500,
+        }
+        if "gpt-4" in model or "3.5-turbo-1106" in model:
+            request["response_format"] = {"type": "json_object"}
+        response = client.chat.completions.create(**request)
 
         response_text = response.choices[0].message.content
+        if response_text is None:
+            raise RuntimeError("OpenAI returned no text content")
         return _parse_llm_response(response_text, categories)
 
     except Exception as e:
@@ -256,7 +261,7 @@ def _classify_with_openai(
         raise
 
 
-def classify_news(
+def classify_with_llm(
     df: pd.DataFrame,
     text_col: str = "text",
     provider: str = "claude",
@@ -284,7 +289,6 @@ def classify_news(
 
     Raises:
         ValueError: If text_col not found in DataFrame or provider not supported.
-        ImportError: If required LLM package not installed.
 
     Example:
         >>> import pandas as pd
@@ -292,7 +296,7 @@ def classify_news(
         >>> df = pd.DataFrame({
         ...     "text": ["Election results announced", "Celebrity wedding"]
         ... })
-        >>> result = notnews.classify_news(df, provider="claude")
+        >>> result = notnews.classify_with_llm(df, provider="claude")
         >>> print(result[["text", "llm_category"]].head())
     """
     # Validate inputs
@@ -325,7 +329,7 @@ def classify_news(
     # Choose classifier function
     if provider == "claude":
         classify_func = _classify_with_claude
-    elif provider == "openai":
+    else:
         classify_func = _classify_with_openai
 
     # Initialize result columns
@@ -344,7 +348,7 @@ def classify_news(
         text = result_df.at[idx, text_col]
 
         try:
-            result = classify_func(text, categories, api_key, model)
+            result = classify_func(str(text), categories, api_key, model)
             result_df.at[idx, "llm_category"] = result["category"]
             result_df.at[idx, "llm_confidence"] = result["confidence"]
             result_df.at[idx, "llm_reasoning"] = result["reasoning"]

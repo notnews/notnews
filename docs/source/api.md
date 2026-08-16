@@ -1,4 +1,7 @@
-# Traditional ML API
+# API reference
 
-```{include} _shared/api.md
+```{eval-rst}
+.. automodule:: notnews
+   :members:
+   :undoc-members:
 ```

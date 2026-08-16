@@ -219,7 +219,7 @@ def classify_llm(input_file, output, text_col, provider, model, api_key, verbose
                 sys.exit(1)
 
         click.echo(f"Classifying with {provider}...")
-        result_df = llm.classify_news(
+        result_df = llm.classify_with_llm(
             df, text_col=text_col, provider=provider, model=model, api_key=api_key
         )
 

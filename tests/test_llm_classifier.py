@@ -13,8 +13,7 @@ from unittest.mock import MagicMock, patch
 
 import pandas as pd
 
-from notnews.llm import DEFAULT_CATEGORIES
-from notnews.llm import classify_news as llm_classify_news
+from notnews.llm import DEFAULT_CATEGORIES, classify_with_llm
 
 
 class TestLLMClassifier(unittest.TestCase):
@@ -54,26 +53,42 @@ class TestLLMClassifier(unittest.TestCase):
             self.assertIsInstance(info["examples"], list)
 
     @patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"})
-    def test_claude_api_key_from_env(self):
+    @patch("notnews.llm._classify_with_claude")
+    def test_claude_api_key_from_env(self, mock_claude_func):
         """Test Claude classifier gets API key from environment."""
-        # This test is no longer applicable with the new unified API structure
-        self.skipTest("Test deprecated with new unified API")
+        mock_claude_func.return_value = {
+            "category": "hard_news",
+            "confidence": 0.9,
+            "reasoning": "Political content",
+        }
+
+        classify_with_llm(self.sample_df, provider="claude")
+
+        self.assertEqual(mock_claude_func.call_args.args[2], "test-key")
 
     @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})
-    def test_openai_api_key_from_env(self):
+    @patch("notnews.llm._classify_with_openai")
+    def test_openai_api_key_from_env(self, mock_openai_func):
         """Test OpenAI classifier gets API key from environment."""
-        # This test is no longer applicable with the new unified API structure
-        self.skipTest("Test deprecated with new unified API")
+        mock_openai_func.return_value = {
+            "category": "hard_news",
+            "confidence": 0.9,
+            "reasoning": "Political content",
+        }
+
+        classify_with_llm(self.sample_df, provider="openai")
+
+        self.assertEqual(mock_openai_func.call_args.args[2], "test-key")
 
     def test_missing_column_error(self):
         """Test error when specified column doesn't exist."""
         with self.assertRaises(ValueError) as context:
-            llm_classify_news(self.sample_df, text_col="nonexistent_column")
+            classify_with_llm(self.sample_df, text_col="nonexistent_column")
         self.assertIn("not found", str(context.exception))
 
     @patch("notnews.llm._classify_with_claude")
-    def test_llm_classify_news_claude(self, mock_claude_func):
-        """Test llm_classify_news function with Claude provider."""
+    def test_classify_with_llm_claude(self, mock_claude_func):
+        """Test classify_with_llm function with Claude provider."""
         # Setup mock
         mock_claude_func.return_value = {
             "category": "hard_news",
@@ -82,7 +97,7 @@ class TestLLMClassifier(unittest.TestCase):
         }
 
         # Call function
-        result = llm_classify_news(
+        result = classify_with_llm(
             self.sample_df, provider="claude", api_key="test-key"
         )
 
@@ -93,8 +108,8 @@ class TestLLMClassifier(unittest.TestCase):
         self.assertIn("llm_reasoning", result.columns)
 
     @patch("notnews.llm._classify_with_openai")
-    def test_llm_classify_news_openai(self, mock_openai_func):
-        """Test llm_classify_news function with OpenAI provider."""
+    def test_classify_with_llm_openai(self, mock_openai_func):
+        """Test classify_with_llm function with OpenAI provider."""
         # Setup mock
         mock_openai_func.return_value = {
             "category": "soft_news",
@@ -103,7 +118,7 @@ class TestLLMClassifier(unittest.TestCase):
         }
 
         # Call function
-        result = llm_classify_news(
+        result = classify_with_llm(
             self.sample_df, provider="openai", api_key="test-key"
         )
 
@@ -116,7 +131,7 @@ class TestLLMClassifier(unittest.TestCase):
     def test_unsupported_provider_error(self):
         """Test error with unsupported provider."""
         with self.assertRaises(ValueError) as context:
-            llm_classify_news(self.sample_df, provider="unsupported")
+            classify_with_llm(self.sample_df, provider="unsupported")
         self.assertIn("Unsupported provider", str(context.exception))
 
     def test_custom_categories(self):
@@ -139,7 +154,7 @@ class TestLLMClassifier(unittest.TestCase):
                 "reasoning": "General news content",
             }
 
-            result = llm_classify_news(
+            result = classify_with_llm(
                 self.sample_df,
                 provider="claude",
                 categories=custom_categories,

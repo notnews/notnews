@@ -1,28 +1,23 @@
-# notnews: Modern News Classification Library
+# notnews
 
 [![CI](https://github.com/notnews/notnews/actions/workflows/ci.yml/badge.svg)](https://github.com/notnews/notnews/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/notnews.svg)](https://pypi.python.org/pypi/notnews)
 [![Build and Deploy Documentation](https://github.com/notnews/notnews/actions/workflows/docs.yml/badge.svg)](https://github.com/notnews/notnews/actions/workflows/docs.yml)
+[![Models](https://img.shields.io/badge/%F0%9F%A4%97-models-yellow)](https://huggingface.co/gojiberries/notnews)
 [![Downloads](https://static.pepy.tech/badge/notnews)](https://pepy.tech/project/notnews)
 
-A fast, modern Python library for classifying news articles as hard news vs. soft news using multiple approaches: URL patterns, machine learning models, and Large Language Models.
+A Python library for classifying news articles using URL patterns, trained
+US and UK models, or optional large language models.
 
 ## Features
 
-🚀 **Three Classification Methods:**
-- **URL Pattern Analysis** - Lightning-fast classification using URL structure
-- **ML Models** - Trained scikit-learn models for US/UK news prediction  
-- **LLM Classification** - Flexible categorization using Claude or OpenAI
+The package supports three classification methods:
 
-🌍 **Multi-Region Support:**
-- US and UK news patterns and models
-- Easily extensible to other regions
+- URL pattern analysis
+- trained models for US and UK news
+- optional Claude or OpenAI classification
 
-⚡ **Modern Architecture:**
-- Unified API with consistent interface
-- Click-based CLI for command-line usage
-- Built with uv_build for 10-35x faster builds
-- Type hints and comprehensive error handling
+The Python API and Click CLI expose the same US and UK classifiers.
 
 **Streamlit Demo:** https://notnews-notnews-streamlitstreamlit-app-u8j3a6.streamlit.app/
 
@@ -97,7 +92,7 @@ uv add notnews
 ### Requirements
 
 - **Python:** 3.11, 3.12, or 3.13
-- **Core:** pandas, numpy, scikit-learn 1.3+, nltk
+- **Core:** pandas, numpy, pyarrow
 - **Web:** requests, beautifulsoup4
 - **CLI:** click 8.0+
 - **Optional:** anthropic, openai (for LLM classification)
@@ -182,17 +177,18 @@ content = notnews.fetch_web_content("https://example.com/article")
 ### ML Models
 - **US:** NYT-based models trained on headline and content text
 - **UK:** URL-based model trained on UK news outlets
-- Compatible with scikit-learn 1.3-1.5 (models trained on 0.22+)
-
-### Performance
-- **URL Classification:** ~1000 articles/second
-- **ML Prediction:** ~100 articles/second  
-- **LLM Classification:** ~1-10 articles/second (API dependent)
+- Runtime inference uses version-independent, typed Parquet exports of the
+  original calibrated linear models.
 
 ## Data Sources
 
 - **US Model:** Based on [NYT data](https://github.com/notnews/us_not_news)
 - **UK Model:** Based on [UK news analysis](https://github.com/notnews/uk_not_news)
+
+The fitted classifiers and vectorizers are published at
+[gojiberries/notnews](https://huggingface.co/gojiberries/notnews). Notnews
+downloads them from an immutable Hugging Face commit on first use. Set
+`NOTNEWS_MODEL_DIR` to use an explicitly managed local copy.
 
 ## Applications
 
@@ -202,7 +198,7 @@ Research using notnews:
 
 ## Documentation
 
-Full documentation: [notnews.readthedocs.io](http://notnews.readthedocs.io/en/latest/)
+Full documentation: [notnews.github.io/notnews](https://notnews.github.io/notnews/)
 
 ## Contributing
 
@@ -213,7 +209,7 @@ We welcome contributions! Please see our [Contributor Code of Conduct](http://co
 ```bash
 git clone https://github.com/notnews/notnews.git
 cd notnews
-uv sync --dev
+uv sync --all-groups
 uv run pytest
 ```
 

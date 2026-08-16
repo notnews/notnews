@@ -6,10 +6,10 @@
 *.log
 venv
 venv3
-docs/build
-dist
+docs/_build/
+dist/
 *.egg-info
-build
+build/
 dev/
 .DS_Store
 

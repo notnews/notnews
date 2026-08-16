@@ -9,13 +9,10 @@ for both US and UK regions with a unified interface.
 
 import logging
 import re
-import sys
-from importlib.resources import files
 
-import joblib
 import pandas as pd
 
-from .utils import clean_text
+from ._portable_model import PortableTextClassifier, load_model
 
 logger = logging.getLogger(__name__)
 
@@ -39,88 +36,32 @@ URL_PATTERNS = {
     },
 }
 
-# Model configurations
-MODEL_CONFIGS = {
-    "us": {
-        "model_file": "data/us_model/nyt_us_soft_news_classifier.joblib",
-        "vectorizer_file": "data/us_model/nyt_us_soft_news_vectorizer.joblib",
-        "soft_news_categories": [
-            "Arts",
-            "Books",
-            "Classifieds",
-            "Dining",
-            "Leisure",
-            "Obits",
-            "Other",
-            "Real Estate",
-            "Style",
-            "Travel",
-        ],
-    },
-    "uk": {
-        "model_file": "data/uk_model/url_uk_classifier.joblib",
-        "vectorizer_file": "data/uk_model/url_uk_vectorizer.joblib",
-        "soft_news_categories": None,  # UK model is binary
-    },
+MODEL_NAMES = {
+    "us": "us_soft",
+    "uk": "uk_soft",
 }
 
-# Cache for loaded models
-_model_cache = {}
+SOFT_NEWS_CATEGORIES = [
+    "Arts",
+    "Books",
+    "Classifieds",
+    "Dining",
+    "Leisure",
+    "Obits",
+    "Other",
+    "Real Estate",
+    "Style",
+    "Travel",
+]
 
 
-def _download_model_if_needed(file_path: str) -> bool:
-    """Download model file if it doesn't exist locally."""
-    try:
-        full_path = str(files("notnews").joinpath(file_path))
-        import os
-
-        from .utils import REPO_BASE_URL, download_file
-
-        if not os.path.exists(full_path):
-            logger.info(f"Downloading {file_path}...")
-            return download_file(REPO_BASE_URL + file_path, full_path)
-        return True
-    except Exception as e:
-        logger.error(f"Failed to download {file_path}: {e}")
-        return False
-
-
-def _load_model(region: str) -> tuple:
-    """Load model and vectorizer for given region."""
-    if region in _model_cache:
-        return _model_cache[region]
-
-    if region not in MODEL_CONFIGS:
+def _load_model(region: str) -> PortableTextClassifier:
+    """Load the portable model for a supported region."""
+    if region not in MODEL_NAMES:
         raise ValueError(f"Unsupported region: {region}. Use 'us' or 'uk'.")
 
-    config = MODEL_CONFIGS[region]
-
-    # For both US and UK models, ensure custom tokenizer is available before loading
-    def custom_tokenizer(doc):
-        doc = re.sub(r"\d+", "[NUM]", doc)
-        return doc.split()
-
-    # Make custom tokenizer available in __main__ for model loading
-    main = sys.modules["__main__"]
-    main.custom_tokenizer = custom_tokenizer
-
-    # Download model files if needed
-    if not _download_model_if_needed(config["model_file"]):
-        raise RuntimeError(f"Could not download model for {region}")
-    if not _download_model_if_needed(config["vectorizer_file"]):
-        raise RuntimeError(f"Could not download vectorizer for {region}")
-
-    # Load model and vectorizer
     try:
-        model_path = str(files("notnews").joinpath(config["model_file"]))
-        vectorizer_path = str(files("notnews").joinpath(config["vectorizer_file"]))
-
-        model = joblib.load(model_path)
-        vectorizer = joblib.load(vectorizer_path)
-
-        _model_cache[region] = (model, vectorizer)
-        return model, vectorizer
-
+        return load_model(MODEL_NAMES[region])
     except Exception as e:
         raise RuntimeError(f"Failed to load model for {region}: {e}") from e
 
@@ -192,7 +133,6 @@ def predict_soft_news(
 
     Raises:
         ValueError: If text_col not found in DataFrame or region not supported.
-        RuntimeError: If model files cannot be downloaded or loaded.
 
     Example:
         >>> import pandas as pd
@@ -204,55 +144,33 @@ def predict_soft_news(
     if text_col not in df.columns:
         raise ValueError(f"Column '{text_col}' not found in DataFrame")
 
-    if region not in MODEL_CONFIGS:
+    if region not in MODEL_NAMES:
         raise ValueError(f"Unsupported region: {region}. Use 'us' or 'uk'.")
+
+    result_df = df.copy()
+    output_col = f"prob_soft_news_{region}"
+    result_df[output_col] = pd.Series(pd.NA, index=result_df.index, dtype="Float64")
 
     # Filter to non-null text rows
     valid_rows = df[text_col].notnull()
-    if not valid_rows.any():
+    if not bool(valid_rows.any()):
         logger.warning("No valid text rows found")
-        result_df = df.copy()
-        result_df[f"prob_soft_news_{region}"] = None
         return result_df
 
-    # Load model
-    model, vectorizer = _load_model(region)
+    model = _load_model(region)
+    text_data = result_df.loc[valid_rows, text_col].astype(str)
 
-    # Prepare text
-    result_df = df.copy()
-    text_data = result_df[text_col].apply(
-        lambda x: clean_text(x) if pd.notnull(x) else ""
-    )
-
-    # Handle custom tokenizer for US model
-    if region == "us":
-
-        def custom_tokenizer(doc):
-            doc = re.sub(r"\d+", "[NUM]", doc)
-            return doc.split()
-
-        # Monkey patch for compatibility with old models
-        main = sys.modules["__main__"]
-        if not hasattr(main, "custom_tokenizer"):
-            main.custom_tokenizer = custom_tokenizer
-
-    # Vectorize text
-    X = vectorizer.transform(text_data.astype(str))
-
-    # Predict
     try:
-        y_prob = model.predict_proba(X)
+        y_prob = model.predict_proba(text_data)
 
-        if region == "us":
-            # US model: binary classifier (soft news probability)
-            result_df[f"prob_soft_news_{region}"] = y_prob[:, 1]
-        elif region == "uk":
-            # UK model: binary classifier (soft news probability)
-            result_df[f"prob_soft_news_{region}"] = y_prob[:, 1]
+        probabilities = pd.Series(
+            y_prob[:, 1], index=result_df.index[valid_rows], dtype="Float64"
+        )
+        result_df.loc[valid_rows, output_col] = probabilities
 
     except Exception as e:
         logger.error(f"Prediction failed for {region} model: {e}")
-        result_df[f"prob_soft_news_{region}"] = None
+        result_df[output_col] = pd.NA
 
     return result_df
 
@@ -269,104 +187,55 @@ def predict_news_category(df: pd.DataFrame, text_col: str = "text") -> pd.DataFr
         DataFrame with additional columns:
         - pred_category: Predicted category
         - prob_soft_news: Probability of soft news categories
+
+    Raises:
+        ValueError: If the requested text column is absent.
+        RuntimeError: If the classifier or vectorizer cannot be loaded.
     """
     if text_col not in df.columns:
         raise ValueError(f"Column '{text_col}' not found in DataFrame")
 
-    # Load US detailed model
-    model_file = "data/us_model/nyt_us_classifier.joblib"
-    vectorizer_file = "data/us_model/nyt_us_vectorizer.joblib"
+    result_df = df.copy()
+    result_df["pred_category"] = pd.Series(pd.NA, index=result_df.index, dtype="string")
+    result_df["prob_soft_news"] = pd.Series(
+        pd.NA, index=result_df.index, dtype="Float64"
+    )
 
-    # Set up custom tokenizer before loading models
-    def custom_tokenizer(doc):
-        doc = re.sub(r"\d+", "[NUM]", doc)
-        return doc.split()
-
-    # Make custom tokenizer available in __main__ for model loading
-    main = sys.modules["__main__"]
-    main.custom_tokenizer = custom_tokenizer
-
-    if not _download_model_if_needed(model_file):
-        raise RuntimeError("Could not download US category model")
-    if not _download_model_if_needed(vectorizer_file):
-        raise RuntimeError("Could not download US category vectorizer")
+    valid_rows = df[text_col].notnull()
+    if not bool(valid_rows.any()):
+        logger.warning("No valid text rows found")
+        return result_df
 
     try:
-        model_path = str(files("notnews").joinpath(model_file))
-        vectorizer_path = str(files("notnews").joinpath(vectorizer_file))
-
-        model = joblib.load(model_path)
-        vectorizer = joblib.load(vectorizer_path)
-
+        model = load_model("us_category")
     except Exception as e:
         raise RuntimeError(f"Failed to load US category model: {e}") from e
 
-    # Filter valid rows
-    valid_rows = df[text_col].notnull()
-    if not valid_rows.any():
-        logger.warning("No valid text rows found")
-        result_df = df.copy()
-        result_df["pred_category"] = None
-        result_df["prob_soft_news"] = None
-        return result_df
+    text_data = result_df.loc[valid_rows, text_col].astype(str)
 
-    # Prepare text (simple preprocessing for category model)
-    result_df = df.copy()
-    text_data = result_df[text_col].str.strip().str.lower().fillna("")
-
-    # Custom tokenizer for US model
-    def custom_tokenizer(doc):
-        doc = re.sub(r"\d+", "[NUM]", doc)
-        return doc.split()
-
-    main = sys.modules["__main__"]
-    if not hasattr(main, "custom_tokenizer"):
-        main.custom_tokenizer = custom_tokenizer
-
-    # Vectorize and predict
     try:
-        X = vectorizer.transform(text_data.astype(str))
-        y_pred = model.predict(X)
-        y_prob = model.predict_proba(X)
+        y_pred = model.predict(text_data)
+        y_prob = model.predict_proba(text_data)
 
         # Add predictions
-        result_df["pred_category"] = y_pred
+        valid_index = result_df.index[valid_rows]
+        result_df.loc[valid_rows, "pred_category"] = pd.Series(
+            y_pred, index=valid_index, dtype="string"
+        )
 
-        # Calculate soft news probability
-        soft_categories = MODEL_CONFIGS["us"]["soft_news_categories"]
-        prob_df = pd.DataFrame(y_prob, columns=model.classes_)
-        result_df["prob_soft_news"] = prob_df[soft_categories].sum(axis=1)
+        prob_df = pd.DataFrame(
+            y_prob, index=valid_index, columns=pd.Index(model.classes, dtype="string")
+        )
+        available_soft_categories = [
+            category for category in SOFT_NEWS_CATEGORIES if category in model.classes
+        ]
+        result_df.loc[valid_rows, "prob_soft_news"] = prob_df[
+            available_soft_categories
+        ].sum(axis=1)
 
     except Exception as e:
         logger.error(f"Prediction failed for US category model: {e}")
-        # Fallback values when model fails
-        result_df["pred_category"] = "Other"
-        result_df["prob_soft_news"] = 0.5
+        result_df.loc[valid_rows, "pred_category"] = "Other"
+        result_df.loc[valid_rows, "prob_soft_news"] = 0.5
 
     return result_df
-
-
-# Convenience functions for backward compatibility
-def soft_news_url_cat_us(df: pd.DataFrame, url_col: str = "url") -> pd.DataFrame:
-    """US URL classification (deprecated - use classify_by_url with region='us')."""
-    return classify_by_url(df, url_col, region="us")
-
-
-def soft_news_url_cat_uk(df: pd.DataFrame, url_col: str = "url") -> pd.DataFrame:
-    """UK URL classification (deprecated - use classify_by_url with region='uk')."""
-    return classify_by_url(df, url_col, region="uk")
-
-
-def pred_soft_news_us(df: pd.DataFrame, text_col: str = "text") -> pd.DataFrame:
-    """US soft news prediction (deprecated - use predict_soft_news with region='us')."""
-    return predict_soft_news(df, text_col, region="us")
-
-
-def pred_soft_news_uk(df: pd.DataFrame, text_col: str = "text") -> pd.DataFrame:
-    """UK soft news prediction (deprecated - use predict_soft_news with region='uk')."""
-    return predict_soft_news(df, text_col, region="uk")
-
-
-def pred_what_news_us(df: pd.DataFrame, text_col: str = "text") -> pd.DataFrame:
-    """US category prediction (deprecated - use predict_news_category)."""
-    return predict_news_category(df, text_col)

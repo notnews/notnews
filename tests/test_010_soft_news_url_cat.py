@@ -9,7 +9,7 @@ import unittest
 
 import pandas as pd
 
-from notnews import soft_news_url_cat_uk, soft_news_url_cat_us
+from notnews import classify_by_url
 
 
 class TestSoftNewsURLCat(unittest.TestCase):
@@ -20,14 +20,14 @@ class TestSoftNewsURLCat(unittest.TestCase):
         pass
 
     def test_soft_news_url_cat_us(self):
-        df = pd.read_csv("tests/sample_us.csv")
-        odf = soft_news_url_cat_us(df, "url")
+        df = pd.read_parquet("tests/sample_us.parquet")
+        odf = classify_by_url(df, "url", region="us")
         self.assertIn("soft_news", odf.columns)
         self.assertIn("hard_news", odf.columns)
 
     def test_soft_news_url_cat_uk(self):
-        df = pd.read_csv("tests/sample_uk.csv")
-        odf = soft_news_url_cat_uk(df, "url")
+        df = pd.read_parquet("tests/sample_uk.parquet")
+        odf = classify_by_url(df, "url", region="uk")
         self.assertIn("soft_news", odf.columns)
         self.assertIn("hard_news", odf.columns)
 
