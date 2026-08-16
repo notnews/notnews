@@ -8,6 +8,8 @@ using URL patterns, machine learning models, and Large Language Models.
 """
 
 # Main classification functions - new unified API
+from importlib.metadata import PackageNotFoundError, version
+
 from .classifiers import (
     classify_by_url,
     pred_soft_news_uk,
@@ -23,7 +25,12 @@ from .llm import DEFAULT_CATEGORIES
 from .llm import classify_news as classify_with_llm
 from .utils import clean_text, fetch_web_content
 
-__version__ = "0.3.0"
+try:
+    # The distribution metadata is the single source; a literal here drifts
+    # from pyproject.toml and from the tag, and nothing notices which is right.
+    __version__ = version("notnews")
+except PackageNotFoundError:  # pragma: no cover - running from a source tree
+    __version__ = "0.0.0.dev0"
 
 __all__ = [
     # Modern unified API

@@ -21,19 +21,9 @@ import sys
 
 sys.path.insert(0, os.path.abspath("../.."))
 
-# Import project metadata from pyproject.toml
-try:
-    import tomllib  # Python 3.11+
-except ImportError:
-    try:
-        import tomli as tomllib  # fallback for older Python
-    except ImportError:
-        import toml as tomllib_fallback
-
-        def load_toml(fp):
-            return tomllib_fallback.load(fp)
-
-        tomllib = type("tomllib", (), {"load": load_toml})()
+# Import project metadata from pyproject.toml. tomllib is stdlib from 3.11,
+# and this package requires >=3.11, so the tomli/toml fallbacks were dead code.
+import tomllib
 
 project_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 pyproject_path = os.path.join(project_dir, "pyproject.toml")
