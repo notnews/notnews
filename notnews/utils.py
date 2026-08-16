@@ -3,50 +3,23 @@
 """
 Utilities for notnews package.
 
-Consolidated module providing text processing, web content fetching,
-model downloading, and other utility functions.
+Consolidated module providing text processing, web content fetching, and other
+utility functions.
 """
 
 import logging
-import os
 import re
 import string
-from os import path
 from typing import Any
 from urllib.parse import urlparse
 
 import requests
 from bs4 import BeautifulSoup
-from tqdm import tqdm
-
-# Optional imports with graceful fallbacks
-try:
-    import nltk
-    from nltk.corpus import stopwords
-    from nltk.stem.porter import PorterStemmer
-
-    # Download required NLTK data
-    nltk.download("stopwords", quiet=True)
-    nltk.download("punkt", quiet=True)
-    nltk.download("punkt_tab", quiet=True)
-
-    _stemmer = PorterStemmer()
-    HAS_NLTK = True
-except ImportError:
-    HAS_NLTK = False
-    # Bound to None like _stemmer already was, so the guarded use sites read a
-    # name that exists rather than one that may never have been created.
-    nltk = None
-    stopwords = None
-    _stemmer = None
+from bs4.element import Tag
 
 logger = logging.getLogger(__name__)
 
-# Model repository URL
-REPO_BASE_URL = (
-    os.environ.get("NOTNEWS_DATA_URL")
-    or "https://github.com/notnews/notnews/raw/master/notnews/"
-)
+_PUNCTUATION_TABLE = str.maketrans(string.punctuation, " " * len(string.punctuation))
 
 # Web scraping headers
 DEFAULT_HEADERS = {
@@ -65,43 +38,23 @@ DEFAULT_HEADERS = {
 def clean_text(text: str) -> str:
     """Clean and normalize text for machine learning processing.
 
-    Performs tokenization, stemming, stopword removal, and normalization.
-    Falls back to basic cleaning if NLTK is not available.
+    Performs deterministic tokenization and normalization.
 
     Args:
         text: Input text to clean and normalize.
 
     Returns:
-        Cleaned text with stemming, stopword removal, and normalization applied.
-        Returns original text if cleaning fails.
+        Normalized, whitespace-separated text.
 
     Example:
         >>> import notnews
         >>> clean = notnews.clean_text("The politician announced new policies today!")
         >>> print(clean)
-        politician announc new polici today
+        the politician announced new policies today
     """
-    if nltk is None or stopwords is None or _stemmer is None:
-        logger.warning("NLTK not available, returning basic cleaned text")
-        # Basic cleaning without NLTK
-        text = re.sub(r"\d+", "", str(text).lower())
-        return "".join([ch for ch in text if ch not in string.punctuation])
-
-    try:
-        text = str(text) if text is not None else ""
-        text = re.sub(r"\d+", "", text)
-        text = text.lower()
-        text = "".join([ch for ch in text if ch not in string.punctuation])
-
-        tokens = nltk.word_tokenize(text)
-        tokens = [t for t in tokens if t not in stopwords.words("english")]
-        stems = [_stemmer.stem(token) for token in tokens]
-
-        return " ".join(stems)
-
-    except Exception as e:
-        logger.error(f"Text cleaning failed: {e}")
-        return str(text) if text is not None else ""
+    normalized = re.sub(r"\d+", "", str(text or "").lower())
+    tokens = normalized.translate(_PUNCTUATION_TABLE).split()
+    return " ".join(tokens)
 
 
 def tokenize(text: str) -> list[str]:
@@ -114,18 +67,7 @@ def tokenize(text: str) -> list[str]:
     Returns:
         List of stemmed tokens
     """
-    if nltk is None or stopwords is None or _stemmer is None:
-        # Basic tokenization without NLTK
-        text = "".join([ch for ch in text if ch not in string.punctuation])
-        return text.lower().split()
-
-    try:
-        text = "".join([ch for ch in text if ch not in string.punctuation])
-        tokens = nltk.word_tokenize(text)
-        return [_stemmer.stem(token) for token in tokens]
-    except Exception as e:
-        logger.error(f"Tokenization failed: {e}")
-        return text.lower().split()
+    return text.lower().translate(_PUNCTUATION_TABLE).split()
 
 
 def truncate_text(text: str, max_tokens: int = 3000) -> str:
@@ -272,7 +214,25 @@ def _clean_web_content(text: str) -> str:
     return text.strip()
 
 
-def extract_article_metadata(url: str, html_content: str = None) -> dict[str, Any]:
+def _tag_attribute(tag: Tag | None, name: str) -> str | None:
+    """Return a scalar HTML attribute.
+
+    Args:
+        tag: Parsed HTML tag.
+        name: Attribute name.
+
+    Returns:
+        String value, or None when absent or multi-valued.
+    """
+    if tag is None:
+        return None
+    value = tag.get(name)
+    return value if isinstance(value, str) else None
+
+
+def extract_article_metadata(
+    url: str, html_content: str | bytes | None = None
+) -> dict[str, Any]:
     """
     Extract metadata from an article page.
 
@@ -283,7 +243,7 @@ def extract_article_metadata(url: str, html_content: str = None) -> dict[str, An
     Returns:
         Dictionary containing title, author, date, and other metadata
     """
-    metadata = {"url": url}
+    metadata: dict[str, Any] = {"url": url}
 
     try:
         if not html_content:
@@ -294,110 +254,57 @@ def extract_article_metadata(url: str, html_content: str = None) -> dict[str, An
         soup = BeautifulSoup(html_content, "html.parser")
 
         # Extract title
-        title = None
-        if soup.find("meta", property="og:title"):
-            title = soup.find("meta", property="og:title").get("content")
-        elif soup.title:
-            title = soup.title.string
+        title_tag = soup.find("meta", property="og:title")
+        title = _tag_attribute(
+            title_tag if isinstance(title_tag, Tag) else None, "content"
+        )
+        if title is None and soup.title:
+            title = str(soup.title.string) if soup.title.string is not None else None
         metadata["title"] = title
 
         # Extract description
-        description = None
-        if soup.find("meta", property="og:description"):
-            description = soup.find("meta", property="og:description").get("content")
-        elif soup.find("meta", attrs={"name": "description"}):
-            description = soup.find("meta", attrs={"name": "description"}).get(
-                "content"
+        description_tag = soup.find("meta", property="og:description")
+        description = _tag_attribute(
+            description_tag if isinstance(description_tag, Tag) else None, "content"
+        )
+        if description is None:
+            fallback_description = soup.find("meta", attrs={"name": "description"})
+            description = _tag_attribute(
+                fallback_description if isinstance(fallback_description, Tag) else None,
+                "content",
             )
         metadata["description"] = description
 
         # Extract author
-        author = None
-        if soup.find("meta", attrs={"name": "author"}):
-            author = soup.find("meta", attrs={"name": "author"}).get("content")
-        elif soup.find("meta", property="article:author"):
-            author = soup.find("meta", property="article:author").get("content")
+        author_tag = soup.find("meta", attrs={"name": "author"})
+        author = _tag_attribute(
+            author_tag if isinstance(author_tag, Tag) else None, "content"
+        )
+        if author is None:
+            fallback_author = soup.find("meta", property="article:author")
+            author = _tag_attribute(
+                fallback_author if isinstance(fallback_author, Tag) else None,
+                "content",
+            )
         metadata["author"] = author
 
         # Extract publication date
-        pub_date = None
-        if soup.find("meta", property="article:published_time"):
-            pub_date = soup.find("meta", property="article:published_time").get(
-                "content"
-            )
-        elif soup.find("time"):
-            time_elem = soup.find("time")
-            pub_date = time_elem.get("datetime") or time_elem.string
+        published_tag = soup.find("meta", property="article:published_time")
+        pub_date = _tag_attribute(
+            published_tag if isinstance(published_tag, Tag) else None, "content"
+        )
+        if pub_date is None:
+            time_element = soup.find("time")
+            if isinstance(time_element, Tag):
+                pub_date = _tag_attribute(time_element, "datetime")
+                if pub_date is None and time_element.string is not None:
+                    pub_date = str(time_element.string)
         metadata["published_date"] = pub_date
 
     except Exception as e:
         logger.error(f"Error extracting metadata from {url}: {e}")
 
     return metadata
-
-
-# Model downloading functions
-def get_app_file_path(app_name: str, filename: str) -> str:
-    """Get path for application data file."""
-    user_dir = path.expanduser("~")
-    app_data_dir = path.join(user_dir, "." + app_name)
-    if not path.exists(app_data_dir):
-        os.makedirs(app_data_dir)
-    return path.join(app_data_dir, filename)
-
-
-def download_file(url: str, target: str) -> bool:
-    """
-    Download file from URL to target path with progress bar.
-
-    Args:
-        url: URL to download from
-        target: Local path to save file
-
-    Returns:
-        True if successful, False otherwise
-    """
-    # Create target directory if needed
-    os.makedirs(os.path.dirname(target), exist_ok=True)
-
-    # Set up headers for authentication if available
-    headers = {}
-    if "NOTNEWS_AUTH_TOKEN" in os.environ:
-        auth_token = os.environ["NOTNEWS_AUTH_TOKEN"]
-        headers["Authorization"] = f"token {auth_token}"
-
-    try:
-        # Streaming download with progress bar
-        response = requests.get(url, stream=True, headers=headers, timeout=30)
-        response.raise_for_status()
-
-        chunk_size = 64 * 1024
-        total_size = int(response.headers.get("content-length", 0))
-
-        with open(target, "wb") as f:
-            if total_size > 0:
-                with tqdm(
-                    total=total_size,
-                    unit="B",
-                    unit_scale=True,
-                    desc=f"Downloading {os.path.basename(target)}",
-                ) as pbar:
-                    for chunk in response.iter_content(chunk_size=chunk_size):
-                        if chunk:
-                            f.write(chunk)
-                            pbar.update(len(chunk))
-            else:
-                # No content length, download without progress
-                for chunk in response.iter_content(chunk_size=chunk_size):
-                    if chunk:
-                        f.write(chunk)
-
-        logger.info(f"Downloaded {url} to {target}")
-        return True
-
-    except Exception as e:
-        logger.error(f"Failed to download {url}: {e}")
-        return False
 
 
 # Legacy utility functions for compatibility

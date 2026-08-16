@@ -1,0 +1,12 @@
+# Managed by Copier. Records the py-canon template for future updates.
+_commit: v1
+_src_path: gh:gojiplus/py-canon
+author_email: gsood07@gmail.com
+author_name: Gaurav Sood
+coverage_floor: 35
+default_branch: master
+description: Predict soft news from URLs and article text
+needs_cli: true
+org: notnews
+package_name: notnews
+project_name: notnews

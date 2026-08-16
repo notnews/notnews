@@ -1,13 +1,10 @@
 [build-system]
-requires = ["uv_build>=0.9.15,<0.12.0"]
-build-backend = "uv_build"
-
-[tool.uv.build-backend]
-module-root = ""
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
 
 [project]
 name = "notnews"
-version = "0.3.0"
+dynamic = ["version"]
 description = "Predict Soft News"
 readme = "README.md"
 license = "MIT"
@@ -32,13 +29,11 @@ requires-python = ">=3.11"
 dependencies = [
     "numpy>=1.22.0,<3.0.0",
     "pandas>=1.3.0",
-    "scikit-learn>=1.6.0,<1.10.0",  # Modern version with Python 3.13 support
-    "joblib",
-    "tqdm",
-    "nltk",
+    "pyarrow>=18",
     "requests",
     "beautifulsoup4>=4.11.0",
-    "click>=8.0.0"
+    "click>=8.0.0",
+    "huggingface-hub>=0.23"
 ]
 
 [project.optional-dependencies]
@@ -49,20 +44,18 @@ llm = [
 
 [dependency-groups]
 docs = [
-    "sphinx>=7.0",
-    "furo>=2024.1.29",
-    "sphinx-autodoc-typehints>=1.25",
-    "sphinx-copybutton>=0.5",
-    "myst-parser>=2.0",
+    "sphinx>=8",
+    "py-canon @ git+https://github.com/gojiplus/py-canon@v1",
+    "furo",
+    "myst-parser",
+    "sphinx-copybutton",
 ]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
     "pytest-xdist>=3.0",
     "ruff>=0.7.0",
-    "mypy>=1.0",
-    "black>=24.0",
-    "isort>=5.0",
+    "pyright>=1.1.390",
     "pre-commit>=3.0",
 ]
 test = [
@@ -79,6 +72,16 @@ Documentation = "https://notnews.github.io/notnews/"
 
 [project.scripts]
 notnews = "notnews.cli:cli"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.uv-dynamic-versioning]
+vcs = "git"
+style = "pep440"
+
+[tool.hatch.build.targets.wheel]
+packages = ["notnews"]
 
 [tool.hatch.build]
 exclude = [
@@ -138,36 +141,13 @@ addopts = [
     "--strict-markers",
     "--cov=notnews",
     "--cov-report=term-missing",
+    "-m",
+    "not live",
 ]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "live: downloads the pinned Hugging Face artifacts",
 ]
-
-# Black configuration
-[tool.black]
-line-length = 88
-target-version = ["py311", "py312", "py313"]
-
-# isort configuration
-[tool.isort]
-profile = "black"
-line_length = 88
-known-first-party = ["notnews"]
-
-# mypy configuration
-[tool.mypy]
-python_version = "3.11"
-warn_return_any = true
-warn_unused_configs = true
-check_untyped_defs = true
-warn_redundant_casts = true
-warn_unused_ignores = true
-warn_no_return = true
-show_error_codes = true
-
-[[tool.mypy.overrides]]
-module = "tests.*"
-ignore_errors = true
 
 # Coverage configuration
 [tool.coverage.run]
@@ -189,3 +169,13 @@ exclude_lines = [
 # The shipped package; streamlit/ is a demo app and tests/ is fixtures.
 include = ["notnews"]
 typeCheckingMode = "standard"
+venvPath = "."
+venv = ".venv"
+
+[tool.pydoclint]
+style = "google"
+arg-type-hints-in-docstring = false
+check-return-types = false
+check-class-attributes = false
+allow-init-docstring = true
+exclude = '\.venv|tests|docs'
