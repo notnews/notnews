@@ -41,6 +41,7 @@ dependencies = [
     "click>=8.0.0"
 ]
 
+[project.optional-dependencies]
 llm = [
     "anthropic>=0.18.0",
     "openai>=1.12.0"
@@ -183,3 +184,8 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
 ]
+
+[tool.pyright]
+# The shipped package; streamlit/ is a demo app and tests/ is fixtures.
+include = ["notnews"]
+typeCheckingMode = "standard"

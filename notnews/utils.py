@@ -34,6 +34,10 @@ try:
     HAS_NLTK = True
 except ImportError:
     HAS_NLTK = False
+    # Bound to None like _stemmer already was, so the guarded use sites read a
+    # name that exists rather than one that may never have been created.
+    nltk = None
+    stopwords = None
     _stemmer = None
 
 logger = logging.getLogger(__name__)
@@ -77,7 +81,7 @@ def clean_text(text: str) -> str:
         >>> print(clean)
         politician announc new polici today
     """
-    if not HAS_NLTK:
+    if nltk is None or stopwords is None or _stemmer is None:
         logger.warning("NLTK not available, returning basic cleaned text")
         # Basic cleaning without NLTK
         text = re.sub(r"\d+", "", str(text).lower())
@@ -110,7 +114,7 @@ def tokenize(text: str) -> list[str]:
     Returns:
         List of stemmed tokens
     """
-    if not HAS_NLTK:
+    if nltk is None or stopwords is None or _stemmer is None:
         # Basic tokenization without NLTK
         text = "".join([ch for ch in text if ch not in string.punctuation])
         return text.lower().split()
