@@ -15,7 +15,7 @@ clean: ## Clean build artifacts
 	find . -type f -name "*.pyc" -delete
 
 dev-install: ## Install package with development dependencies
-	uv sync --all-groups
+	uv sync --all-groups --all-extras
 
 test: ## Run tests
 	uv run pytest
