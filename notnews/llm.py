@@ -21,6 +21,7 @@ try:
 
     HAS_ANTHROPIC = True
 except ImportError:
+    Anthropic = None
     HAS_ANTHROPIC = False
 
 try:
@@ -28,6 +29,7 @@ try:
 
     HAS_OPENAI = True
 except ImportError:
+    OpenAI = None
     HAS_OPENAI = False
 
 logger = logging.getLogger(__name__)
@@ -175,7 +177,7 @@ def _classify_with_claude(
     text: str, categories: dict, api_key: str, model: str = "claude-3-haiku-20240307"
 ) -> dict[str, Any]:
     """Classify text using Claude."""
-    if not HAS_ANTHROPIC:
+    if Anthropic is None:
         raise ImportError(
             "anthropic package required for Claude. Install with: pip install anthropic"
         )
@@ -212,7 +214,7 @@ def _classify_with_openai(
     text: str, categories: dict, api_key: str, model: str = "gpt-3.5-turbo"
 ) -> dict[str, Any]:
     """Classify text using OpenAI."""
-    if not HAS_OPENAI:
+    if OpenAI is None:
         raise ImportError(
             "openai package required for OpenAI. Install with: pip install openai"
         )
@@ -258,9 +260,9 @@ def classify_news(
     df: pd.DataFrame,
     text_col: str = "text",
     provider: str = "claude",
-    categories: dict = None,
-    api_key: str = None,
-    model: str = None,
+    categories: dict | None = None,
+    api_key: str | None = None,
+    model: str | None = None,
 ) -> pd.DataFrame:
     """Classify news articles using Large Language Models.
 
