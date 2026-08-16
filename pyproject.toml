@@ -105,7 +105,6 @@ exclude = [
     "/.venv",
     "/docs",
     "/tests",
-    "/.gitignore",
     "/.pre-commit-config.yaml",
 ]
 
