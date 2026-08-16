@@ -165,7 +165,7 @@ df_custom = notnews.classify_with_llm(
 )
 
 # Fetch content from URLs
-content = notnews.fetch_web_content("https://example.com/article")
+content = notnews.fetch_web_content("https://example.com")
 ```
 
 ## Model Information
