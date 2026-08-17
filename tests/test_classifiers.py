@@ -45,10 +45,10 @@ def test_predict_news_category_preserves_nondefault_index() -> None:
     classes = ["Hard", *classifiers.SOFT_NEWS_CATEGORIES]
     probabilities = np.zeros((2, len(classes)))
     probabilities[0, classes.index("Arts")] = 0.75
+    probabilities[1, classes.index("Hard")] = 0.75
     probabilities[1, classes.index("Books")] = 0.25
     model = SimpleNamespace(
         classes=classes,
-        predict=Mock(return_value=np.array(["Arts", "Hard"])),
         predict_proba=Mock(return_value=probabilities),
     )
     source = pd.DataFrame({"text": ["arts", None, "politics"]}, index=[101, 44, 205])
@@ -63,6 +63,7 @@ def test_predict_news_category_preserves_nondefault_index() -> None:
     assert pd.isna(result.loc[44, "prob_soft_news"])
     assert result.loc[205, "pred_category"] == "Hard"
     assert result.loc[205, "prob_soft_news"] == pytest.approx(0.25)
+    model.predict_proba.assert_called_once()
 
 
 def test_load_model_maps_region_to_portable_model() -> None:
@@ -79,3 +80,15 @@ def test_load_model_rejects_unknown_region() -> None:
     """Unsupported regions fail before any artifact lookup."""
     with pytest.raises(ValueError, match="Unsupported region"):
         classifiers._load_model("ca")
+
+
+def test_classify_by_url_accepts_empty_dataframe() -> None:
+    """Empty inputs retain their index and receive typed output columns."""
+    source = pd.DataFrame({"url": pd.Series(dtype="string")})
+
+    result = classifiers.classify_by_url(source)
+
+    assert result.empty
+    assert list(result.columns) == ["url", "hard_news", "soft_news"]
+    assert str(result["hard_news"].dtype) == "Int64"
+    assert str(result["soft_news"].dtype) == "Int64"

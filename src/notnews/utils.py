@@ -16,6 +16,8 @@ from urllib.parse import urlparse
 import requests
 from bs4 import BeautifulSoup
 from bs4.element import Tag
+from pandas import isna
+from pandas.api.types import is_scalar
 
 logger = logging.getLogger(__name__)
 
@@ -35,13 +37,14 @@ DEFAULT_HEADERS = {
 
 
 # Text processing functions
-def clean_text(text: str) -> str:
+def clean_text(text: object) -> str:
     """Clean and normalize text for machine learning processing.
 
     Performs deterministic tokenization and normalization.
 
     Args:
-        text: Input text to clean and normalize.
+        text: Scalar input to clean and normalize. Missing values produce an
+            empty string.
 
     Returns:
         Normalized, whitespace-separated text.
@@ -52,7 +55,10 @@ def clean_text(text: str) -> str:
         >>> print(clean)
         the politician announced new policies today
     """
-    normalized = re.sub(r"\d+", "", str(text or "").lower())
+    if is_scalar(text) and bool(isna(text)):
+        return ""
+
+    normalized = re.sub(r"\d+", "", str(text).lower())
     tokens = normalized.translate(_PUNCTUATION_TABLE).split()
     return " ".join(tokens)
 
@@ -117,7 +123,7 @@ def fetch_web_content(url: str, timeout: int = 10) -> str | None:
 
     Example:
         >>> import notnews
-        >>> content = notnews.fetch_web_content("https://example.com/article")
+        >>> content = notnews.fetch_web_content("https://example.com")
         >>> if content:
         ...     print(f"Extracted {len(content)} characters")
     """
@@ -305,30 +311,3 @@ def extract_article_metadata(
         logger.error(f"Error extracting metadata from {url}: {e}")
 
     return metadata
-
-
-# Legacy utility functions for compatibility
-def find_ngrams(vocab: list, text: str, n: int) -> list[int]:
-    """
-    Find and return list of the index of n-grams in the vocabulary list.
-
-    Args:
-        vocab: Vocabulary list
-        text: Input text
-        n: N-grams size
-
-    Returns:
-        List of indices of n-grams in vocabulary
-    """
-    wi = []
-
-    ngram_iter = zip(*[text[i:] for i in range(n)], strict=False)
-    for ngram in ngram_iter:
-        word = "".join(ngram)
-        try:
-            idx = vocab.index(word)
-        except (ValueError, IndexError):
-            idx = 0
-        wi.append(idx)
-
-    return wi

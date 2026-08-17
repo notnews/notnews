@@ -10,6 +10,7 @@ for both US and UK regions with a unified interface.
 import logging
 import re
 
+import numpy as np
 import pandas as pd
 
 from ._portable_model import PortableTextClassifier, load_model
@@ -109,9 +110,12 @@ def classify_by_url(
 
         return (1 if hard_match else None), (1 if soft_match else None)
 
-    # Apply classification
-    result_df[["hard_news", "soft_news"]] = result_df[url_col].apply(
-        lambda x: pd.Series(classify_url(x))
+    classified = [classify_url(url) for url in result_df[url_col]]
+    result_df["hard_news"] = pd.array(
+        [hard_news for hard_news, _ in classified], dtype="Int64"
+    )
+    result_df["soft_news"] = pd.array(
+        [soft_news for _, soft_news in classified], dtype="Int64"
     )
 
     return result_df
@@ -214,8 +218,9 @@ def predict_news_category(df: pd.DataFrame, text_col: str = "text") -> pd.DataFr
     text_data = result_df.loc[valid_rows, text_col].astype(str)
 
     try:
-        y_pred = model.predict(text_data)
         y_prob = model.predict_proba(text_data)
+        labels = np.asarray(model.classes, dtype=str)
+        y_pred = labels[np.argmax(y_prob, axis=1)]
 
         # Add predictions
         valid_index = result_df.index[valid_rows]

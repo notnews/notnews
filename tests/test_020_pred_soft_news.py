@@ -24,17 +24,24 @@ class TestPredSoftNews(unittest.TestCase):
     def test_pred_soft_news_us(self):
         df = pd.read_parquet("tests/sample_us.parquet")
         odf = predict_soft_news(df, "text", region="us")
-        self.assertIn("prob_soft_news_us", odf.columns)
+        probabilities = odf["prob_soft_news_us"]
+        self.assertTrue(probabilities.notna().all())
+        self.assertTrue(probabilities.between(0, 1).all())
 
     def test_pred_what_news_us(self):
         df = pd.read_parquet("tests/sample_us.parquet")
         odf = predict_news_category(df, "text")
-        self.assertIn("pred_category", odf.columns)
+        self.assertTrue(odf["pred_category"].notna().all())
+        self.assertFalse(odf["pred_category"].eq("Other").all())
+        self.assertTrue(odf["prob_soft_news"].notna().all())
+        self.assertTrue(odf["prob_soft_news"].between(0, 1).all())
 
     def test_pred_soft_news_uk(self):
         df = pd.read_parquet("tests/sample_uk.parquet")
         odf = predict_soft_news(df, "text", region="uk")
-        self.assertIn("prob_soft_news_uk", odf.columns)
+        probabilities = odf["prob_soft_news_uk"]
+        self.assertTrue(probabilities.notna().all())
+        self.assertTrue(probabilities.between(0, 1).all())
 
 
 if __name__ == "__main__":

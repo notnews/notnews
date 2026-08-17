@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling", "uv-dynamic-versioning"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.11.32,<0.12"]
+build-backend = "uv_build"
 
 [project]
 name = "notnews"
-dynamic = ["version"]
+version = "0.4.0"
 description = "Predict Soft News"
 readme = "README.md"
 license = "MIT"
@@ -58,10 +58,16 @@ dev = [
     "pyright>=1.1.390",
     "pre-commit>=3.0",
 ]
+model-training = [
+    "joblib>=1.5",
+    "scikit-learn==1.7.2",
+]
 test = [
+    "joblib>=1.5",
     "pytest>=7.0",
     "pytest-cov>=4.0",
     "pytest-xdist>=3.0",
+    "scikit-learn==1.7.2",
 ]
 
 [project.urls]
@@ -73,25 +79,8 @@ Documentation = "https://notnews.github.io/notnews/"
 [project.scripts]
 notnews = "notnews.cli:cli"
 
-[tool.hatch.version]
-source = "uv-dynamic-versioning"
-
-[tool.uv-dynamic-versioning]
-vcs = "git"
-style = "pep440"
-
-[tool.hatch.build.targets.wheel]
-packages = ["notnews"]
-
-[tool.hatch.build]
-exclude = [
-    "/.github",
-    "/.venv",
-    "/docs",
-    "/tests",
-    "/.gitignore",
-    "/.pre-commit-config.yaml",
-]
+[tool.uv.build-backend]
+source-include = ["CHANGELOG.md", "CITATION.cff"]
 
 
 # Ruff configuration
@@ -167,7 +156,7 @@ exclude_lines = [
 
 [tool.pyright]
 # The shipped package; streamlit/ is a demo app and tests/ is fixtures.
-include = ["notnews"]
+include = ["src"]
 typeCheckingMode = "standard"
 venvPath = "."
 venv = ".venv"

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-08-16
+
 ### Added
 
 - Immutable Hugging Face distribution for the six trained model artifacts.
@@ -18,13 +20,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Parquet rather than loading version-bound scikit-learn pickles.
 - Use the py-canon Sphinx configuration and reusable CI, docs, and release
   workflows.
+- Build with native `uv_build` and manage the static project version with
+  `uv version`.
+- Use the standard `src/` package layout.
 - Build documentation directly from the README and public docstrings.
 
 ### Fixed
 
 - Preserve non-default DataFrame indices when assigning category probabilities.
+- Classify duplicate-index LLM inputs row by row instead of mixing their results.
+- Return typed output columns for empty URL-classification inputs.
 - Leave missing text rows unclassified instead of predicting from empty text.
 - Feed model vectorizers the raw text used by their training pipelines.
+- Bound dense feature allocation during portable inference and reuse category
+  probabilities for label selection.
 
 ### Removed
 
