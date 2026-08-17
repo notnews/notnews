@@ -771,6 +771,7 @@ wheels = [
 
 [[package]]
 name = "notnews"
+version = "0.4.0"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -1000,8 +1001,8 @@ wheels = [
 
 [[package]]
 name = "py-canon"
-version = "1.post9.dev0+e794e55"
-source = { git = "https://github.com/gojiplus/py-canon?rev=v1#e794e555cc921b7a77abf9ccafe86953e4dcc925" }
+version = "1.0.0"
+source = { git = "https://github.com/gojiplus/py-canon?rev=v1#cea6f4db223093b5f0335f105cbc94c1e90aa39b" }
 
 [[package]]
 name = "pyarrow"

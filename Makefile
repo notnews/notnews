@@ -32,7 +32,7 @@ type-check: ## Run type checker
 	uv run pyright
 
 docstring-check: ## Check docstring signatures
-	uvx --from pydoclint==0.9.1 pydoclint --config=pyproject.toml notnews
+	uvx --from pydoclint==0.9.1 pydoclint --config=pyproject.toml src/notnews
 
 docs: ## Build documentation
 	uv run sphinx-build -W --keep-going -b html docs/source docs/_build/html

@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Parquet rather than loading version-bound scikit-learn pickles.
 - Use the py-canon Sphinx configuration and reusable CI, docs, and release
   workflows.
+- Build with native `uv_build` and manage the static project version with
+  `uv version`.
+- Use the standard `src/` package layout.
 - Build documentation directly from the README and public docstrings.
 
 ### Fixed
