@@ -19,7 +19,7 @@ jobs:
     uses: gojiplus/py-canon/.github/workflows/reusable-ci.yml@v1
     with:
       wheel-import: notnews
-      coverage-floor: 35
+      coverage-floor: 46
       run-preen: true
 
   live-models:
