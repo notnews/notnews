@@ -155,13 +155,11 @@ Classify articles using Large Language Models.
 custom_categories = {
     "breaking": {"description": "Breaking news and urgent updates"},
     "analysis": {"description": "In-depth analysis and commentary"},
-    "lifestyle": {"description": "Lifestyle and entertainment content"}
+    "lifestyle": {"description": "Lifestyle and entertainment content"},
 }
 
 df_custom = notnews.classify_with_llm(
-    df, 
-    provider="claude",
-    categories=custom_categories
+    df, provider="claude", categories=custom_categories
 )
 
 # Fetch content from URLs
