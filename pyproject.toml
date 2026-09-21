@@ -131,11 +131,15 @@ addopts = [
     "--cov-report=term-missing",
     "-m",
     "not live",
+    "--strict-config",
 ]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "live: downloads the pinned Hugging Face artifacts",
 ]
+log_level = "INFO"
+xfail_strict = true
+filterwarnings = ["error"]
 
 # Coverage configuration
 [tool.coverage.run]
