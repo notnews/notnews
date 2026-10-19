@@ -167,7 +167,7 @@ def load_model(model_name: str) -> PortableTextClassifier:
         coefficients = np.asarray(
             [row["coefficients"] for row in fold_estimators], dtype=np.float64
         )
-        if coefficients.shape[1] != len(vocabulary):
+        if coefficients.ndim != 2 or np.size(coefficients, axis=1) != len(vocabulary):
             raise ValueError(f"Estimator feature count differs for {model_name}")
         x_thresholds = tuple(
             np.asarray(row["x_thresholds"], dtype=np.float64)
