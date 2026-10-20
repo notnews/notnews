@@ -59,14 +59,14 @@ dev = [
 ]
 model-training = [
     "joblib>=1.5",
-    "scikit-learn==1.9.0",
+    "scikit-learn==1.9.1",
 ]
 test = [
     "joblib>=1.5",
     "pytest>=7.0",
     "pytest-cov>=4.0",
     "pytest-xdist>=3.0",
-    "scikit-learn==1.9.0",
+    "scikit-learn==1.9.1",
 ]
 
 [project.urls]
@@ -131,11 +131,15 @@ addopts = [
     "--cov-report=term-missing",
     "-m",
     "not live",
+    "--strict-config",
 ]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "live: downloads the pinned Hugging Face artifacts",
 ]
+log_level = "INFO"
+xfail_strict = true
+filterwarnings = ["error"]
 
 # Coverage configuration
 [tool.coverage.run]
@@ -167,3 +171,6 @@ check-return-types = false
 check-class-attributes = false
 allow-init-docstring = true
 exclude = '\.venv|tests|docs'
+
+[tool.codespell]
+builtin = "clear,rare,en-GB_to_en-US"
