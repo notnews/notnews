@@ -174,7 +174,7 @@ def _parse_llm_response(response_text: str, categories: dict) -> dict[str, Any]:
 
 
 def _classify_with_claude(
-    text: str, categories: dict, api_key: str, model: str = "claude-3-haiku-20240307"
+    text: str, categories: dict, api_key: str, model: str = "claude-haiku-4-5-20251001"
 ) -> dict[str, Any]:
     """Classify text using Claude."""
     if Anthropic is None:
@@ -191,7 +191,6 @@ def _classify_with_claude(
         response = client.messages.create(
             model=model,
             max_tokens=500,
-            temperature=0.3,
             messages=[{"role": "user", "content": prompt}],
             system=(
                 "You are a news categorization expert. Always respond with valid JSON."
@@ -279,7 +278,7 @@ def classify_with_llm(
             Uses DEFAULT_CATEGORIES if None.
         api_key: API key for the LLM provider. Uses environment variable if None.
         model: Model name to use. Uses provider defaults if None
-            (claude-3-haiku-20240307 for Claude, gpt-3.5-turbo for OpenAI).
+            (claude-haiku-4-5-20251001 for Claude, gpt-3.5-turbo for OpenAI).
 
     Returns:
         DataFrame with original columns plus:
@@ -324,7 +323,7 @@ def classify_with_llm(
 
     # Set default model
     if not model:
-        model = "claude-3-haiku-20240307" if provider == "claude" else "gpt-3.5-turbo"
+        model = "claude-haiku-4-5-20251001" if provider == "claude" else "gpt-3.5-turbo"
 
     # Choose classifier function
     if provider == "claude":

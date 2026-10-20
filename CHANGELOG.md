@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Support Anthropic SDK 1.x by omitting its removed temperature parameter.
+- Replace the retired Claude Haiku 3 default with Claude Haiku 4.5.
+
 ## [0.4.0] - 2026-08-16
 
 ### Added
