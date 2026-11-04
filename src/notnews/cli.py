@@ -10,6 +10,7 @@ through a modern Click-based interface.
 import logging
 import sys
 from pathlib import Path
+from typing import cast
 
 import click
 import pandas as pd
@@ -224,7 +225,7 @@ def classify_llm(input_file, output, text_col, provider, model, api_key, verbose
         )
 
         # Show classification summary
-        classified_count = result_df["llm_category"].notna().sum()
+        classified_count = cast("pd.Series", result_df["llm_category"]).notna().sum()
         avg_confidence = result_df["llm_confidence"].mean()
 
         click.echo(f"Successfully classified {classified_count}/{len(df)} articles")
