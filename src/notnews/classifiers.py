@@ -9,6 +9,7 @@ for both US and UK regions with a unified interface.
 
 import logging
 import re
+from typing import cast
 
 import numpy as np
 import pandas as pd
@@ -156,7 +157,7 @@ def predict_soft_news(
     result_df[output_col] = pd.Series(pd.NA, index=result_df.index, dtype="Float64")
 
     # Filter to non-null text rows
-    valid_rows = df[text_col].notnull()
+    valid_rows = cast("pd.Series", df[text_col]).notnull()
     if not bool(valid_rows.any()):
         logger.warning("No valid text rows found")
         return result_df
@@ -205,7 +206,7 @@ def predict_news_category(df: pd.DataFrame, text_col: str = "text") -> pd.DataFr
         pd.NA, index=result_df.index, dtype="Float64"
     )
 
-    valid_rows = df[text_col].notnull()
+    valid_rows = cast("pd.Series", df[text_col]).notnull()
     if not bool(valid_rows.any()):
         logger.warning("No valid text rows found")
         return result_df
