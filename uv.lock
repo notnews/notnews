@@ -877,7 +877,7 @@ requires-dist = [
     { name = "openai", marker = "extra == 'llm'", specifier = ">=1.12.0" },
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "pyarrow", specifier = ">=18" },
-    { name = "requests", specifier = ">=2.0.0" },
+    { name = "requests", specifier = ">=2.32.2" },
 ]
 provides-extras = ["llm"]
 
